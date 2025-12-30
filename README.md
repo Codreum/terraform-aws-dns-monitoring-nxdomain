@@ -134,14 +134,37 @@ module "codreum_dns_free" {
   prefix             = "acme-dev"
   aws_region         = "us-east-1"
   product_code       = "dnscif"
-  free_log_group_name = "/aws/route53/resolver-query-logs"
-  dns_alert_sns_arn   = "arn:aws:sns:us-east-1:123456789012:alerts"
-  free_vpc_id  = "vpc-0123456789abcdef0"  
-  free_zone_id = "Z123EXAMPLE"
+  free_log_group_name = "/aws/route53/resolver-query-logs"  # must match your cloudwatch log group name
+  dns_alert_sns_arn   = "arn:aws:sns:us-east-1:123456789012:alerts"  # change to your own SNS ARN
+  free_vpc_id  = "vpc-0123456789abcdef0"    # change to the vpc id you want to monitor
+  free_zone_id = "Z123EXAMPLE"  # change to the zone id you want to monitor
 }
 ```
 
-3. Deploy :
+3. (optional) this exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too
+```hcl
+output "dns_free_enabled" {
+  value = module.dnsci.enabled
+}
+
+output "dns_free_dashboards" {
+  value = module.dnsci.dashboards
+}
+
+output "dns_free_alarms" {
+  value = module.dnsci.alarms
+}
+
+output "dns_free_metrics" {
+  value = module.dnsci.metrics
+}
+
+output "dns_free_ci_rules" {
+  value = module.dnsci.contributor_insights_rules
+}
+```
+
+4. Deploy :
 terraform init
 terraform apply
 
