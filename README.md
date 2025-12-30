@@ -141,7 +141,7 @@ module "codreum_dns_free" {
 }
 ```
 
-3. (optional) this exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too
+3. (optional) this module exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too
 ```hcl
 output "dns_free_enabled" {
   value = module.dnsci.enabled
@@ -166,6 +166,7 @@ output "dns_free_ci_rules" {
 
 4. Deploy :
 terraform init
+
 terraform apply
 
 
