@@ -53,6 +53,7 @@ This module helps you detect these quickly and investigate using Top-N breakdown
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
 | NXDOMAIN dashboards (Zone/VPC baseline) | ✅ | ✅ |
 | Additional DNS metrics + Contributor Insights packs (SERVFAIL/REFUSED/etc.) | ❌ | ✅ |
+| Per zone metrics/Alarm/CI toggle | ❌ | ✅ |
 | Per-zone metric dashboards (beyond NXDOMAIN) | ❌ | ✅ |
 | Per-zone Top-N dashboards (expanded) | ❌ | ✅ |
 | Built-in SNS wiring presets (Email / Slack / SMS) | ❌ | ✅ |
