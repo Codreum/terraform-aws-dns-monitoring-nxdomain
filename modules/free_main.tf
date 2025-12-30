@@ -1,120 +1,5 @@
 data "aws_caller_identity" "current" {}
 
-variable "prefix"        {
-   type = string
- }
-
-variable "aws_region"    { 
-   type = string 
-}
-
-
-variable "tags"          { 
-   type = map(string) 
-}
-
-variable "free_log_group_name" {
-  description = "CloudWatch Logs group for Route 53 Resolver query logs."
-  type        = string
-}
-
-variable "free_vpc_id" {
-  description = "Optional VPC to scope NXDOMAIN client insights & alarm."
-  type        = string
-  default     = null
-}
-
-variable "free_zone_id" {
-  description = "Optional hosted zone (Zxxxxxxxx) to scope 'top NXDOMAIN names'."
-  type        = string
-  default     = null
-}
-
-variable "dns_alert_sns_arn" {
-  description = "SNS ARN for alarms."
-  type        = string
-}
-
-variable "free_zone_nxdomain_threshold"        {
- type = number 
-default = null 
-} # count per period
-
-variable "free_zone_nxdomain_alarm_period" { 
-type = number
- default = null 
-} # seconds, e.g., 300
-
-variable "free_zone_nxdomain_eval_periods"     { 
-type = number 
-default = null 
-} # e.g., 1
-
-variable "free_zone_topn_nxdomain"             { 
-type = number 
-default = null
- } # e.g., 10
-
-# VPC: alarm & dashboard knobs
-
-variable "free_vpc_nxdomain_threshold"         { 
-type = number 
-default = null
- }
-
-variable "free_vpc_nxdomain_alarm_period"      { 
-type = number 
-default = null
- }
-
-variable "free_vpc_nxdomain_eval_periods"      { 
-type = number 
-default = null 
-}
-
-variable "free_vpc_topn_nxdomain"              { 
-type = number 
-default = null 
-}
-
-variable "free_zone_nxdomain_rate_threshold_pct" { 
-  type = number
-  default = null 
-} # e.g., 10 (%)
-
-variable "free_vpc_nxdomain_rate_threshold_pct"  {
- type = number
- default = null 
-} # e.g., 10 (%)
-
-## anomaly var##
-# --- Anomaly knobs (optional overrides) ---
-variable "free_zone_anomaly_band_width" {
-  description = "Std-dev width for anomaly band on Zone metrics (e.g., 2.0 ≈ ~95%)."
-  type        = number
-  default     = null
-}
-
-variable "free_vpc_anomaly_band_width" {
-  description = "Std-dev width for anomaly band on VPC metrics."
-  type        = number
-  default     = null
-}
-
-variable "free_zone_anomaly_eval_periods" {
-  description = "Evaluation periods for Zone anomaly alarms."
-  type        = number
-  default     = null
-}
-
-variable "free_vpc_anomaly_eval_periods" {
-  description = "Evaluation periods for VPC anomaly alarms."
-  type        = number
-  default     = null
-}
-
-
-
 data "aws_partition" "current" {}
 
 data "aws_route53_zone" "free_zone" {
@@ -1332,3 +1217,107 @@ resource "aws_cloudwatch_dashboard" "ops_dns_landing" {
   })
 }
 
+output "enabled" {
+  description = "Which modes are enabled in this deployment."
+  value = {
+    zone = local.has_zone
+    vpc  = local.has_vpc
+  }
+}
+
+# -----------------------
+# Dashboards (names + URLs)
+# -----------------------
+output "dashboards" {
+  description = "CloudWatch dashboard names and console URLs."
+  value = {
+    ops_name  = aws_cloudwatch_dashboard.ops_dns_landing.dashboard_name
+    ops_url   = "https://console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.ops_dns_landing.dashboard_name}"
+
+    zone_name = local.has_zone ? aws_cloudwatch_dashboard.zone_dns_dashboard[0].dashboard_name : null
+    zone_url  = local.has_zone ? "https://console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.zone_dns_dashboard[0].dashboard_name}" : null
+
+    vpc_name  = local.has_vpc ? aws_cloudwatch_dashboard.vpc_dns_dashboard[0].dashboard_name : null
+    vpc_url   = local.has_vpc ? "https://console.aws.amazon.com/cloudwatch/home?region=${var.aws_region}#dashboards:name=${aws_cloudwatch_dashboard.vpc_dns_dashboard[0].dashboard_name}" : null
+  }
+}
+
+# -----------------------
+# Alarms (names + ARNs)
+# -----------------------
+output "alarms" {
+  description = "Alarm names and ARNs for integrating with other systems."
+  value = {
+    zone = local.has_zone ? {
+      nxdomain_static_name      = aws_cloudwatch_metric_alarm.zone_nxdomain_alarm[0].alarm_name
+      nxdomain_static_arn       = aws_cloudwatch_metric_alarm.zone_nxdomain_alarm[0].arn
+
+      nxdomain_rate_name        = aws_cloudwatch_metric_alarm.zone_nxdomain_rate_alarm[0].alarm_name
+      nxdomain_rate_arn         = aws_cloudwatch_metric_alarm.zone_nxdomain_rate_alarm[0].arn
+
+      nxdomain_anomaly_name     = aws_cloudwatch_metric_alarm.zone_nxdomain_anomaly[0].alarm_name
+      nxdomain_anomaly_arn      = aws_cloudwatch_metric_alarm.zone_nxdomain_anomaly[0].arn
+
+      nxdomain_rate_anom_name   = aws_cloudwatch_metric_alarm.zone_nxdomain_rate_anomaly[0].alarm_name
+      nxdomain_rate_anom_arn    = aws_cloudwatch_metric_alarm.zone_nxdomain_rate_anomaly[0].arn
+    } : null
+
+    vpc = local.has_vpc ? {
+      nxdomain_static_name      = aws_cloudwatch_metric_alarm.vpc_nxdomain_alarm[0].alarm_name
+      nxdomain_static_arn       = aws_cloudwatch_metric_alarm.vpc_nxdomain_alarm[0].arn
+
+      nxdomain_rate_name        = aws_cloudwatch_metric_alarm.vpc_nxdomain_rate_alarm[0].alarm_name
+      nxdomain_rate_arn         = aws_cloudwatch_metric_alarm.vpc_nxdomain_rate_alarm[0].arn
+
+      nxdomain_anomaly_name     = aws_cloudwatch_metric_alarm.vpc_nxdomain_anomaly[0].alarm_name
+      nxdomain_anomaly_arn      = aws_cloudwatch_metric_alarm.vpc_nxdomain_anomaly[0].arn
+
+      nxdomain_rate_anom_name   = aws_cloudwatch_metric_alarm.vpc_nxdomain_rate_anomaly[0].alarm_name
+      nxdomain_rate_anom_arn    = aws_cloudwatch_metric_alarm.vpc_nxdomain_rate_anomaly[0].arn
+    } : null
+  }
+}
+
+# -----------------------
+# Metrics (namespace + names)
+# -----------------------
+output "metrics" {
+  description = "Custom metric namespace and metric names created by this module."
+  value = {
+    namespace = local.ns
+
+    zone = local.has_zone ? {
+      nxdomain_metric = "ZoneNXDOMAIN"
+      total_metric    = "ZoneTotal"
+      dimension_key   = "ZoneId"
+      dimension_value = var.free_zone_id
+    } : null
+
+    vpc = local.has_vpc ? {
+      nxdomain_metric = "VpcNXDOMAIN"
+      total_metric    = "VpcTotal"
+      dimension_key   = "VpcId"
+      dimension_value = var.free_vpc_id
+    } : null
+  }
+}
+
+# -----------------------
+# Contributor Insights rule names
+# -----------------------
+output "contributor_insights_rules" {
+  description = "Contributor Insights rule names (Top-N) created by this module."
+  value = {
+    zone = local.has_zone ? {
+      top_qname = aws_cloudwatch_contributor_insight_rule.zone_topn_nxdomain_qname[0].rule_name
+      top_qtype = aws_cloudwatch_contributor_insight_rule.zone_topn_nxdomain_qtype[0].rule_name
+      top_edge  = aws_cloudwatch_contributor_insight_rule.zone_topn_nxdomain_edge[0].rule_name
+      top_src   = aws_cloudwatch_contributor_insight_rule.zone_topn_nxdomain_rip[0].rule_name
+    } : null
+
+    vpc = local.has_vpc ? {
+      top_qname = aws_cloudwatch_contributor_insight_rule.vpc_topn_nxdomain_qname[0].rule_name
+      top_src   = aws_cloudwatch_contributor_insight_rule.vpc_topn_nxdomain_srcip[0].rule_name
+    } : null
+  }
+}
