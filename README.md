@@ -186,7 +186,9 @@ You’ll get an Ops landing page plus dashboards for the modes you enabled:
 - **VPC dashboard** (if `free_vpc_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N by source/qname
 
 ![Dashboards](./screenshot/dashboard3.jpg)
+
 ![Dashboards](./screenshot/dashboard1.jpg)
+
 ![Dashboards](./screenshot/dashboard2.jpg)
 
 **How to use**
@@ -205,7 +207,9 @@ This module creates alarms for:
 Alarms publish to your SNS topic (`dns_alert_sns_arn`).
 
 ![Alarms](./screenshot/alarm.jpg)
+
 ![Alarms](./screenshot/alarm2.jpg)
+
 ![Alarms](./screenshot/email_alert.jpg)
 
 **What to check**
@@ -222,6 +226,7 @@ Contributor Insights rules are used for “Top-N” analysis (fast triage):
 - VPC: top NXDOMAIN by **qname / source**
 
 ![Contributor Insights](./screenshot/CI1.jpg)
+
 ![Contributor Insights](./screenshot/CI2.jpg)
 
 **How to use**
