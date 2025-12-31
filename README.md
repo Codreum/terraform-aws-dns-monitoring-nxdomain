@@ -165,6 +165,7 @@ output "dns_free_ci_rules" {
 ```
 
 4. Deploy :
+
 terraform init
 
 terraform apply
