@@ -1,50 +1,31 @@
-\## Summary
+## Summary
+<!-- What does this PR change and why? -->
 
-<!-- What changed and why? Keep it short and outcome-focused. -->
+## Type of change
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation / examples
+- [ ] CI / tooling
 
+## Checklist
+- [ ] I ran `terraform fmt -recursive`
+- [ ] I ran `terraform validate` (module + affected examples)
+- [ ] I updated docs/examples (if needed)
+- [ ] I added/updated outputs/variables (if needed)
+- [ ] I added/updated tests or checks (if applicable)
 
+## How to test
+<!-- Paste the exact commands you ran and what to look for -->
+```bash
+# e.g.
+terraform init
+terraform validate
+terraform plan
+```
 
-\## Changes
+## Screenshots (optional)
+<!-- Dashboards / alarms screenshots if UI changes -->
 
-\- 
-
-\- 
-
-\- 
-
-
-
-\## Why
-
-<!-- Context / problem statement / customer impact -->
-
-
-
-\## How to test
-
-\- \[ ] `terraform fmt -check -recursive`
-
-\- \[ ] `terraform validate` (module + examples)
-
-\- \[ ] `terraform plan` on an example (optional)
-
-
-
-\## Screenshots / Evidence (optional)
-
-<!-- Dashboard screenshot / CI run link / plan output snippet -->
-
-
-
-\## Checklist
-
-\- \[ ] CI passed (fmt/validate, lint, security)
-
-\- \[ ] Docs/README updated (if needed)
-
-\- \[ ] Examples updated (if needed)
-
-\- \[ ] No secrets/credentials included
-
-
-
+## Notes
+<!-- Any caveats, follow-ups, or roll-out notes -->
