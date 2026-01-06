@@ -129,7 +129,7 @@ This module ships with sane defaults:
 
 ```hcl
 module "codreum_dns_free" {
-  source = "github.com/<org>/<repo>//modules/free?ref=v0.1.0"
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
 
   prefix             = "acme-dev"
   aws_region         = "us-east-1"
@@ -141,7 +141,11 @@ module "codreum_dns_free" {
 }
 ```
 
-3. (optional) this module exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too
+You can also copy the main.tf file from example folder, and make the minimal edit
+- replace  module source with "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
+- Change free_log_group_name , dns_alert_sns_arn, free_vpc_id or/and free_zone_id to your own resource
+
+3. (optional) this module exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too into your own main.tf
 ```hcl
 output "dns_free_enabled" {
   value = module.dnsci.enabled
@@ -163,6 +167,8 @@ output "dns_free_ci_rules" {
   value = module.dnsci.contributor_insights_rules
 }
 ```
+
+You can also copy the output.tf file from example folder
 
 4. Deploy :
 

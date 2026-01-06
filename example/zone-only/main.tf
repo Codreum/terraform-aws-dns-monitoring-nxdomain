@@ -15,18 +15,8 @@ provider "aws" {
 }
 
 
-variable "module_ref" {
-  type    = string
-  default = "" # empty means local
-}
-
-locals {
-  module_source = var.module_ref != "" ? "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=${var.module_ref}" : "../../modules"
-}
-
-
 module "dnsci" {
-  source = local.module_source
+  source = "../../modules"
 
   prefix     = "poc-1"
   aws_region = "us-east-1"
