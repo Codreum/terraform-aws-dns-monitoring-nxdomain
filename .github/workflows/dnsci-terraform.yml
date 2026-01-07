@@ -2,7 +2,7 @@ name: CI - Terraform
 
 on:
   push:
-    branches: ["**"]
+    branches: [main]
   pull_request:
 
 permissions:
@@ -90,12 +90,16 @@ jobs:
 
     # Don't run AWS-authenticated job for fork PRs
     if: |
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      && github.actor != 'dependabot[bot]'
-
-
-
-
+      (
+        github.event_name == 'pull_request'
+        && github.event.pull_request.head.repo.full_name == github.repository
+        && github.event.pull_request.user.login != 'dependabot[bot]'
+      )
+      || (
+        github.event_name == 'push'
+        && github.actor != 'dependabot[bot]'
+        && github.actor != 'dependabot'
+      )
     strategy:
       fail-fast: false
       matrix:
@@ -224,11 +228,16 @@ jobs:
 
     # Don't run AWS-authenticated job for fork PR
     if: |
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-      && github.actor != 'dependabot[bot]'
-
-
-
+      (
+        github.event_name == 'pull_request'
+        && github.event.pull_request.head.repo.full_name == github.repository
+        && github.event.pull_request.user.login != 'dependabot[bot]'
+      )
+      || (
+        github.event_name == 'push'
+        && github.actor != 'dependabot[bot]'
+        && github.actor != 'dependabot'
+      )
     strategy:
       fail-fast: false
       matrix:
