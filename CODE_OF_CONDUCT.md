@@ -1,8 +1,8 @@
-\# Code of Conduct
+# Code of Conduct
 
 
 
-\## Our Pledge
+## Our Pledge
 
 
 
@@ -18,7 +18,7 @@ This project is an infrastructure/IaC module. Discussions may include production
 
 
 
-\## Our Standards
+## Our Standards
 
 
 
@@ -26,19 +26,19 @@ Examples of behavior that contributes to a positive environment include:
 
 
 
-\- Being respectful, considerate, and constructive
+- Being respectful, considerate, and constructive
 
-\- Using welcoming and inclusive language
+- Using welcoming and inclusive language
 
-\- Giving and receiving feedback professionally (assume good intent; focus on the work)
+- Giving and receiving feedback professionally (assume good intent; focus on the work)
 
-\- Being mindful of how communication tone can be interpreted in text
+- Being mindful of how communication tone can be interpreted in text
 
-\- Prioritizing safety and correctness when discussing infrastructure changes
+- Prioritizing safety and correctness when discussing infrastructure changes
 
-\- Respecting differing viewpoints and experiences
+- Respecting differing viewpoints and experiences
 
-\- Gracefully accepting responsibility and apologizing when appropriate
+- Gracefully accepting responsibility and apologizing when appropriate
 
 
 
@@ -46,25 +46,25 @@ Examples of unacceptable behavior include:
 
 
 
-\- Harassment, intimidation, discrimination, or personal attacks
+- Harassment, intimidation, discrimination, or personal attacks
 
-\- Trolling, insulting or derogatory comments, or “dogpiling”
+- Trolling, insulting or derogatory comments, or “dogpiling”
 
-\- Public or private harassment, threats of violence, or encouraging harm
+- Public or private harassment, threats of violence, or encouraging harm
 
-\- Publishing others’ private information (“doxxing”) without explicit permission
+- Publishing others’ private information (“doxxing”) without explicit permission
 
-\- Sexual language or imagery, or unwelcome sexual attention
+- Sexual language or imagery, or unwelcome sexual attention
 
-\- Deliberate disruption of discussions, reviews, or collaboration
+- Deliberate disruption of discussions, reviews, or collaboration
 
-\- Pressuring maintainers to merge changes by escalating tone or urgency
+- Pressuring maintainers to merge changes by escalating tone or urgency
 
-\- Knowingly promoting unsafe practices (e.g., encouraging insecure defaults) without clearly labeling risks and trade-offs
+- Knowingly promoting unsafe practices (e.g., encouraging insecure defaults) without clearly labeling risks and trade-offs
 
 
 
-\## Scope
+## Scope
 
 
 
@@ -72,13 +72,13 @@ This Code of Conduct applies within all project spaces and official communicatio
 
 
 
-\- GitHub issues, pull requests, and discussions
+- GitHub issues, pull requests, and discussions
 
-\- Code reviews and comments
+- Code reviews and comments
 
-\- Release notes and project documentation
+- Release notes and project documentation
 
-\- Any other spaces managed by the project maintainers
+- Any other spaces managed by the project maintainers
 
 
 
@@ -86,7 +86,7 @@ It also applies when an individual is representing the project or its community 
 
 
 
-\## Reporting
+## Reporting
 
 
 
@@ -94,25 +94,25 @@ If you experience or witness unacceptable behavior, please report it as soon as 
 
 
 
-\### How to report
+### How to report
 
-\- \*\*Preferred:\*\* Email the maintainers at: \*\*support@codreum.com\*\*
+- \*\*Preferred:\*\* Email the maintainers at: \*\*support@codreum.com\*\*
 
-\- \*\*Alternative:\*\* Open a GitHub issue with the prefix \*\*`\[CoC]`\*\* and request confidentiality in the first line (note: GitHub issues are public by default).
+- \*\*Alternative:\*\* Open a GitHub issue with the prefix \*\*`\[CoC]`\*\* and request confidentiality in the first line (note: GitHub issues are public by default).
 
-\- If you believe there is an immediate security risk, follow the project’s security reporting process if one exists (or email maintainers).
+- If you believe there is an immediate security risk, follow the project’s security reporting process if one exists (or email maintainers).
 
 
 
-\### What to include (helpful details)
+### What to include (helpful details)
 
-\- Your contact information (if you want a response)
+- Your contact information (if you want a response)
 
-\- Names/handles of involved parties
+- Names/handles of involved parties
 
-\- Description of what happened and where it happened (links/screenshots if available)
+- Description of what happened and where it happened (links/screenshots if available)
 
-\- Any relevant context (e.g., dates, times, prior incidents)
+- Any relevant context (e.g., dates, times, prior incidents)
 
 
 
@@ -120,7 +120,7 @@ All reports will be reviewed promptly and treated as confidentially as possible.
 
 
 
-\## Enforcement Responsibilities
+## Enforcement Responsibilities
 
 
 
@@ -132,7 +132,7 @@ Maintainers have the right and responsibility to remove, edit, or reject comment
 
 
 
-\## Enforcement Guidelines
+## Enforcement Guidelines
 
 
 
@@ -140,7 +140,7 @@ The project maintainers will follow these Community Impact Guidelines when deter
 
 
 
-\### 1. Correction
+### 1. Correction
 
 \*\*Community Impact:\*\* Use of inappropriate language or other behavior deemed unprofessional or unwelcome.  
 
@@ -148,7 +148,7 @@ The project maintainers will follow these Community Impact Guidelines when deter
 
 
 
-\### 2. Warning
+### 2. Warning
 
 \*\*Community Impact:\*\* A violation through a single incident or series of actions.  
 
@@ -156,7 +156,7 @@ The project maintainers will follow these Community Impact Guidelines when deter
 
 
 
-\### 3. Temporary Ban
+### 3. Temporary Ban
 
 \*\*Community Impact:\*\* Serious or repeated violations, including sustained disruptive behavior.  
 
@@ -164,7 +164,7 @@ The project maintainers will follow these Community Impact Guidelines when deter
 
 
 
-\### 4. Permanent Ban
+### 4. Permanent Ban
 
 \*\*Community Impact:\*\* Demonstrating a pattern of violations or engaging in severe harassment, threats, or harm.  
 
@@ -172,7 +172,7 @@ The project maintainers will follow these Community Impact Guidelines when deter
 
 
 
-\## Attribution
+## Attribution
 
 
 
