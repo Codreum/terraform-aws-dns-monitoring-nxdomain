@@ -96,11 +96,12 @@ If you experience or witness unacceptable behavior, please report it as soon as 
 
 ### How to report
 
-- \*\*Preferred:\*\* Email the maintainers at: \*\*support@codreum.com\*\*
+- **Preferred (private):** Email **support@codreum.com**.
 
-- \*\*Alternative:\*\* Open a GitHub issue with the prefix \*\*`\[CoC]`\*\* and request confidentiality in the first line (note: GitHub issues are public by default).
+- **If email is not possible:** Open a GitHub issue titled **[CoC] Report request** that contains **no incident details**, and ask maintainers to move the conversation to email.  
+  > Note: GitHub issues are public by default. Please do not include sensitive information (names, screenshots, logs, or details) in a public issue.
 
-- If you believe there is an immediate security risk, follow the project’s security reporting process if one exists (or email maintainers).
+- **Immediate risk / security-related concerns:** Email **support@codreum.com** immediately. If the project has a `SECURITY.md`, follow that process as well.
 
 
 
