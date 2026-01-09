@@ -2,20 +2,35 @@ name: CI - tfsec
 
 on:
   push:
-    branches: ["**"]
   pull_request:
 
 permissions:
   contents: read
 
 jobs:
-  tfsec:
+  tfsec_sarif:
+    name: tfsec (SARIF)
     runs-on: ubuntu-latest
+
+    # Needed for SARIF upload (will be ineffective on fork PRs; we skip upload there)
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Run tfsec
+      - name: Run tfsec (SARIF)
         uses: aquasecurity/tfsec-action@b466648d6e39e7c75324f25d83891162a721f2d6
         with:
-          soft_fail: false
+          format: sarif
+          sarif_file: tfsec.sarif
+          soft_fail: false   # fail job when findings exist (your policy)
+
+      # Upload only when allowed (non-fork PRs OR push)
+      - name: Upload SARIF to GitHub Code Scanning
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: github/codeql-action/upload-sarif@c37a8b7cd97e31de3fcbd9d84c401870edeb8d34
+        with:
+          sarif_file: tfsec.sarif

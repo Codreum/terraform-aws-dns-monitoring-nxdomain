@@ -97,8 +97,6 @@ jobs:
       - terraform-fmt
       - terraform-validate-modules
       - terraform-validate-examples
-
-    # Don't run AWS-authenticated job for fork PRs
     if: |
       github.repository == 'Codreum/terraform-aws-dns-monitoring-free'
       && github.event_name != 'schedule'
@@ -175,7 +173,6 @@ jobs:
       - name: Fail if docs changed
         run: |
           git diff --exit-code
-
 
   terraform-validate-modules-latest:
     name: terraform validate (modules) (latest)
@@ -339,7 +336,6 @@ jobs:
       fail-fast: false
       matrix:
         dir:
-          # Pick ONE first to reduce blast radius; later you can add more
           - example/both-zone-vpc
 
     steps:
@@ -371,19 +367,14 @@ jobs:
           TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
           TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
-
-          # UNIQUE per run
           TF_VAR_prefix: ci-${{ github.run_id }}-${{ github.run_attempt }}
         run: terraform apply -auto-approve -input=false -lock=false
-
-      # optional: small sanity check
       - name: Terraform output
         if: always()
         working-directory: ${{ matrix.dir }}
         run: terraform output -json || true
 
       - name: Terraform destroy (always)
-        # always try to cleanup even if apply/output fails
         if: always()
         continue-on-error: true
         working-directory: ${{ matrix.dir }}
@@ -408,8 +399,6 @@ jobs:
       - terraform-validate-modules-latest
       - terraform-validate-examples-latest
       - terraform-plan-examples-latest
-
-    # Only run on push to main
     if: |
       github.repository == 'Codreum/terraform-aws-dns-monitoring-free'
       && github.actor != 'dependabot[bot]'
