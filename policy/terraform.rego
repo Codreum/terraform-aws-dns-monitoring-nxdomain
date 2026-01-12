@@ -3,13 +3,12 @@ package terraform
 # Only evaluate resources that are being created/updated/deleted (not no-op)
 resource_changes[rc] {
   rc := input.resource_changes[_]
-  some a
-  a := rc.change.actions[_]
-  a != "no-op"
+  action := rc.change.actions[_]
+  action != "no-op"
 }
 
 ################################################################################
-# Example "deny" (hard fail): block SSH open to the world (if SG rules exist)
+# Deny: block SSH open to the world
 ################################################################################
 deny[msg] {
   rc := resource_changes[_]
@@ -21,7 +20,6 @@ deny[msg] {
   after.to_port >= 22
   after.protocol == "tcp"
 
-  some cidr
   cidr := after.cidr_blocks[_]
   cidr == "0.0.0.0/0"
 
@@ -29,7 +27,7 @@ deny[msg] {
 }
 
 ################################################################################
-# Example "warn" (soft): alarms should set treat_missing_data explicitly
+# Warn: alarms should set treat_missing_data explicitly
 ################################################################################
 warn[msg] {
   rc := resource_changes[_]
