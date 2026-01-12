@@ -1,4 +1,4 @@
-name: CI - tfsec
+name: CI - Trivy (IaC SARIF)
 
 on:
   push:
@@ -8,11 +8,11 @@ permissions:
   contents: read
 
 jobs:
-  tfsec_sarif:
-    name: tfsec (SARIF)
+  trivy_sarif:
+    name: Trivy (SARIF)
     runs-on: ubuntu-latest
 
-    # Needed for SARIF upload (will be ineffective on fork PRs; we skip upload there)
+    # Needed for SARIF upload (ineffective on fork PRs; we skip upload there)
     permissions:
       contents: read
       security-events: write
@@ -21,16 +21,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Run tfsec (SARIF)
-        uses: aquasecurity/tfsec-action@b466648d6e39e7c75324f25d83891162a721f2d6
+      - name: Run Trivy misconfig scan (SARIF)
+        uses: aquasecurity/trivy-action@0.33.1
         with:
+          scan-type: fs
+          scan-ref: .
+          scanners: misconfig
           format: sarif
-          sarif_file: tfsec.sarif
-          soft_fail: false   # fail job when findings exist (your policy)
+          output: trivy.sarif
+          exit-code: "1"   # fail job when findings exist (like your tfsec soft_fail: false)
 
-      # Upload only when allowed (non-fork PRs OR push)
       - name: Upload SARIF to GitHub Code Scanning
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: github/codeql-action/upload-sarif@c37a8b7cd97e31de3fcbd9d84c401870edeb8d34
         with:
-          sarif_file: tfsec.sarif
+          sarif_file: trivy.sarif

@@ -11,8 +11,9 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ci-terraform-${{ github.workflow }}-${{ github.ref }}
+  group: ci-terraform-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
   cancel-in-progress: true
+
 
 jobs:
   terraform-fmt:
@@ -150,7 +151,39 @@ jobs:
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
           TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
           TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
-        run: terraform plan -lock=false -input=false -refresh=false
+        run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
+
+      - name: Terraform show (plan JSON)
+        working-directory: ${{ matrix.dir }}
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Cache conftest
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ${{ runner.temp }}/conftest
+          key: conftest-0.58.0-${{ runner.os }}-x86_64
+
+      - name: Install conftest
+        run: |
+          set -euo pipefail
+          if [ -f "${RUNNER_TEMP}/conftest" ]; then
+            sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+            conftest --version
+            exit 0
+          fi
+
+          CONFTEST_VERSION="0.58.0"
+          curl -sSL -o /tmp/conftest.tar.gz "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/conftest.tar.gz -C /tmp conftest
+          mv /tmp/conftest "${RUNNER_TEMP}/conftest"
+          sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+          conftest --version
+
+      - name: Conftest policy check (tfplan)
+        working-directory: ${{ matrix.dir }}
+        run: |
+          test -d "${{ github.workspace }}/policy"
+          conftest test tfplan.json -p "${{ github.workspace }}/policy" --all-namespaces
 
 
   terraform-docs:
@@ -306,8 +339,39 @@ jobs:
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
           TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
           TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
-        run: terraform plan -lock=false -input=false -refresh=false
+        run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
 
+      - name: Terraform show (plan JSON)
+        working-directory: ${{ matrix.dir }}
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Cache conftest
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: ${{ runner.temp }}/conftest
+          key: conftest-0.58.0-${{ runner.os }}-x86_64
+
+      - name: Install conftest
+        run: |
+          set -euo pipefail
+          if [ -f "${RUNNER_TEMP}/conftest" ]; then
+            sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+            conftest --version
+            exit 0
+          fi
+
+          CONFTEST_VERSION="0.58.0"
+          curl -sSL -o /tmp/conftest.tar.gz "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/conftest.tar.gz -C /tmp conftest
+          mv /tmp/conftest "${RUNNER_TEMP}/conftest"
+          sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+          conftest --version
+
+      - name: Conftest policy check (tfplan)
+        working-directory: ${{ matrix.dir }}
+        run: |
+          test -d "${{ github.workspace }}/policy"
+          conftest test tfplan.json -p "${{ github.workspace }}/policy" --all-namespaces
 
   terraform-apply-destroy-smoke:
     name: terraform apply + destroy (smoke)
