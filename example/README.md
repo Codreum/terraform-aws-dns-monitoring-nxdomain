@@ -1,6 +1,6 @@
-# Examples — terraform-aws-dns-monitoring-free
+# Examples — terraform-aws-dns-monitoring-nxdomain
 
-This directory contains **ready-to-run Terraform examples** for the **Free (NXDOMAIN)** DNS monitoring module.  
+This directory contains **ready-to-run Terraform examples** for the **(NXDOMAIN)** DNS monitoring module.  
 Each example is a complete Terraform configuration that calls the module and outputs key artifacts (dashboards, alarms, metrics, enabled scopes).
 
 ---
@@ -60,11 +60,11 @@ Your AWS identity must be able to create/read:
 ## Module source (important)
 
 This repository exposes the Terraform module from the **`modules/`** subdirectory.  
-Replace the existing module source "../../modules" with "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
+Replace the existing module source "../../modules" with "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
 
 ```hcl
-module "codreum_dns_free" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
+module "codreum_dns_NX" {
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
 }
 ```
 
@@ -77,14 +77,14 @@ All examples require:
 - `prefix` — name prefix for created resources
 - `aws_region` — AWS region for dashboards/alarms
 - `tags` — resource tags
-- `free_log_group_name` — CloudWatch Logs log group that contains the DNS logs
+- `NX_log_group_name` — CloudWatch Logs log group that contains the DNS logs
 - `dns_alert_sns_arn` — SNS topic ARN for alarm notifications
 
 Enable scope(s) by setting one or both of the following:
-- `free_zone_id` — enables **Zone** resources
-- `free_vpc_id` — enables **VPC** resources
+- `NX_zone_id` — enables **Zone** resources
+- `NX_vpc_id` — enables **VPC** resources
 
-> **Important:** Set `free_log_group_name` to the **actual CloudWatch log group name** that is already receiving DNS logs for the Hosted Zone (`free_zone_id`) and/or VPC (`free_vpc_id`) you want to monitor.
+> **Important:** Set `NX_log_group_name` to the **actual CloudWatch log group name** that is already receiving DNS logs for the Hosted Zone (`NX_zone_id`) and/or VPC (`NX_vpc_id`) you want to monitor.
 
 ---
 
@@ -101,9 +101,9 @@ cd examples/both-zone-vpc
 ### 2) Update values in `main.tf`
 At minimum, update:
 - `aws_region`
-- `free_log_group_name`
+- `NX_log_group_name`
 - `dns_alert_sns_arn`
-- `free_zone_id` and/or `free_vpc_id` (depending on the example)
+- `NX_zone_id` and/or `NX_vpc_id` (depending on the example)
 
 ### Optional: override module defaults (quick tuning)
 
@@ -120,42 +120,42 @@ Add / keep this block in each example `main.tf` (edit values as needed):
   # ----------------------------
 
   # Zone (Hosted Zone) tuning
-  # free_zone_nxdomain_threshold         = 
-  # free_zone_nxdomain_alarm_period      = 
-  # free_zone_nxdomain_eval_periods      = 
-  # free_zone_topn_nxdomain              = 
-  # free_zone_nxdomain_rate_threshold_pct = 
-  # free_zone_anomaly_band_width         = 
-  # free_zone_anomaly_eval_periods       = 
+  # NX_zone_nxdomain_threshold         = 
+  # NX_zone_nxdomain_alarm_period      = 
+  # NX_zone_nxdomain_eval_periods      = 
+  # NX_zone_topn_nxdomain              = 
+  # NX_zone_nxdomain_rate_threshold_pct = 
+  # NX_zone_anomaly_band_width         = 
+  # NX_zone_anomaly_eval_periods       = 
 
   # VPC (Resolver) tuning
-  # free_vpc_nxdomain_threshold          = 
-  # free_vpc_nxdomain_alarm_period       = 
-  # free_vpc_nxdomain_eval_periods       = 
-  # free_vpc_topn_nxdomain               = 
-  # free_vpc_nxdomain_rate_threshold_pct = 
-  # free_vpc_anomaly_band_width          = 
-  # free_vpc_anomaly_eval_periods        = 
+  # NX_vpc_nxdomain_threshold          = 
+  # NX_vpc_nxdomain_alarm_period       = 
+  # NX_vpc_nxdomain_eval_periods       = 
+  # NX_vpc_topn_nxdomain               = 
+  # NX_vpc_nxdomain_rate_threshold_pct = 
+  # NX_vpc_anomaly_band_width          = 
+  # NX_vpc_anomaly_eval_periods        = 
 ```
 
 Default values (if you don’t override):
 - Zone
-  - free_zone_nxdomain_threshold = 100
-  - free_zone_nxdomain_alarm_period = 300
-  - free_zone_nxdomain_eval_periods = 1
-  - free_zone_topn_nxdomain = 10
-  - free_zone_nxdomain_rate_threshold_pct = 10
-  - free_zone_anomaly_band_width = 2.0
-  - free_zone_anomaly_eval_periods = 3
+  - NX_zone_nxdomain_threshold = 100
+  - NX_zone_nxdomain_alarm_period = 300
+  - NX_zone_nxdomain_eval_periods = 1
+  - NX_zone_topn_nxdomain = 10
+  - NX_zone_nxdomain_rate_threshold_pct = 10
+  - NX_zone_anomaly_band_width = 2.0
+  - NX_zone_anomaly_eval_periods = 3
 
 - VPC
-  - free_vpc_nxdomain_threshold = 200
-  - free_vpc_nxdomain_alarm_period = 300
-  - free_vpc_nxdomain_eval_periods = 1
-  - free_vpc_topn_nxdomain = 10
-  - free_vpc_nxdomain_rate_threshold_pct = 10
-  - free_vpc_anomaly_band_width = 2.0
-  - free_vpc_anomaly_eval_periods = 3
+  - NX_vpc_nxdomain_threshold = 200
+  - NX_vpc_nxdomain_alarm_period = 300
+  - NX_vpc_nxdomain_eval_periods = 1
+  - NX_vpc_topn_nxdomain = 10
+  - NX_vpc_nxdomain_rate_threshold_pct = 10
+  - NX_vpc_anomaly_band_width = 2.0
+  - NX_vpc_anomaly_eval_periods = 3
 
 
 ### 3) Initialize and deploy
@@ -185,8 +185,8 @@ Depending on enabled scopes, the module creates:
 
 ### 1) Dashboards
 - **Ops Landing** dashboard (summary + links + triage guidance)
-- **Zone NXDOMAIN** dashboard (when `free_zone_id` is set)
-- **VPC NXDOMAIN** dashboard (when `free_vpc_id` is set)
+- **Zone NXDOMAIN** dashboard (when `NX_zone_id` is set)
+- **VPC NXDOMAIN** dashboard (when `NX_vpc_id` is set)
 
 ### 2) Alarms (per enabled scope)
 - NXDOMAIN **count** (static threshold)
@@ -213,13 +213,13 @@ Depending on enabled scopes, the module creates:
 ## Folder conventions
 
 - `both-zone-vpc`  
-  Sets **both** `free_zone_id` and `free_vpc_id` (enables both scopes).
+  Sets **both** `NX_zone_id` and `NX_vpc_id` (enables both scopes).
 
 - `zone-only`  
-  Sets **only** `free_zone_id` (omit `free_vpc_id`).
+  Sets **only** `NX_zone_id` (omit `NX_vpc_id`).
 
 - `vpc-only`  
-  Sets **only** `free_vpc_id` (omit `free_zone_id`).
+  Sets **only** `NX_vpc_id` (omit `NX_zone_id`).
 
 ---
 
@@ -227,7 +227,7 @@ Depending on enabled scopes, the module creates:
 
 ### 1) Dashboards show “No data”
 Common causes:
-- Incorrect `free_log_group_name` or wrong AWS region
+- Incorrect `NX_log_group_name` or wrong AWS region
 - Logs are not arriving recently
 - Log format does not match expectations (CLF vs JSON / field names differ)
 - Metric filters have not matched any events yet
@@ -239,7 +239,7 @@ Common causes:
 
 ### 3) Terraform cannot download the module source
 - Ensure the source uses `//modules`:
-  - `github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0`
+  - `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0`
 - Ensure the tag exists and matches exactly (e.g., `v0.1.0`)
 
 Re-run:

@@ -71,14 +71,14 @@ output "metrics" {
       nxdomain_metric = "ZoneNXDOMAIN"
       total_metric    = "ZoneTotal"
       dimension_key   = "ZoneId"
-      dimension_value = var.free_zone_id
+      dimension_value = var.NX_zone_id
     } : null
 
     vpc = local.has_vpc ? {
       nxdomain_metric = "VpcNXDOMAIN"
       total_metric    = "VpcTotal"
       dimension_key   = "VpcId"
-      dimension_value = var.free_vpc_id
+      dimension_value = var.NX_vpc_id
     } : null
   }
 }

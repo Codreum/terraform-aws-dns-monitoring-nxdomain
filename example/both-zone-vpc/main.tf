@@ -15,31 +15,31 @@ provider "aws" {
 }
 
 
-module "codreum_dns_free" {
+module "codreum_dns_NX" {
   source = "../../modules"
 
   prefix     = "poc-1"
   aws_region = "us-east-1"
   tags       = { env = "poc", owner = "user-name" }
 
-  free_log_group_name = "/aws/route53/free.codreum.com"
+  NX_log_group_name = "/aws/route53/free.codreum.com"
   dns_alert_sns_arn   = "arn:aws:sns:us-east-1:123456789123:test-topic"
-  free_zone_id        = "Z06819422VITX178DF26Z"
-  free_vpc_id         = "vpc-06926d7bfefae789c"
+  NX_zone_id        = "Z06819422VITX178DF26Z"
+  NX_vpc_id         = "vpc-06926d7bfefae789c"
 
-  # free_zone_nxdomain_threshold = 
-  # free_zone_nxdomain_alarm_period =
-  # free_zone_nxdomain_eval_periods =
-  # free_zone_topn_nxdomain =
-  # free_vpc_nxdomain_threshold =
-  # free_vpc_nxdomain_alarm_period =
-  # free_vpc_nxdomain_eval_periods =
-  # free_vpc_topn_nxdomain =
-  # free_zone_nxdomain_rate_threshold_pct =
-  # free_vpc_nxdomain_rate_threshold_pct =
-  # free_zone_anomaly_band_width =
-  # free_vpc_anomaly_band_width =
-  # free_zone_anomaly_eval_periods =
-  # free_vpc_anomaly_eval_periods =
+  # NX_zone_nxdomain_threshold = 
+  # NX_zone_nxdomain_alarm_period =
+  # NX_zone_nxdomain_eval_periods =
+  # NX_zone_topn_nxdomain =
+  # NX_vpc_nxdomain_threshold =
+  # NX_vpc_nxdomain_alarm_period =
+  # NX_vpc_nxdomain_eval_periods =
+  # NX_vpc_topn_nxdomain =
+  # NX_zone_nxdomain_rate_threshold_pct =
+  # NX_vpc_nxdomain_rate_threshold_pct =
+  # NX_zone_anomaly_band_width =
+  # NX_vpc_anomaly_band_width =
+  # NX_zone_anomaly_eval_periods =
+  # NX_vpc_anomaly_eval_periods =
 }
 

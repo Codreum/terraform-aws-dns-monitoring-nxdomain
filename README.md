@@ -10,7 +10,7 @@
   <a href="#quickstart">Quickstart</a>
 </p>
 
-# Codreum DNS Monitoring (Free)
+# Codreum DNS Monitoring (NXDOMAIN)
 
 Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using **AWS CloudWatch + Terraform**.
 
@@ -18,7 +18,7 @@ Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using **AWS
 ✅ Works with **Route 53 hosted zone query logs** + **Resolver query logs (VPC)**  
 ✅ Top-N triage views (domain / qtype / edge / source)
 
-Free includes **NXDOMAIN signals only**. **Codreum Pro** adds broader DNS error metrics and investigation dashboards.
+This solution is for **NXDOMAIN signals only**. **Codreum Pro** adds broader DNS error metrics and investigation dashboards.
 
 - **Deploy:** jump to [Quickstart](#quickstart)  
 - **Website:** https://www.codreum.com  
@@ -65,7 +65,7 @@ This module uses **your real DNS query logs** inside AWS:
 ✅ Included:
 1. NXDOMAIN **count** alarm (Zone + VPC)
 2. NXDOMAIN **rate (%)** alarm (Zone + VPC)
-3. **Anomaly detection** alarms (count + rate)
+3. NXDOMAIN **Anomaly detection** alarms (count + rate)
 4. CloudWatch dashboards:
    - Zone dashboard
    - VPC dashboard
@@ -81,7 +81,7 @@ This module uses **your real DNS query logs** inside AWS:
 3. Licensing, enforcement, premium support / SLA (Pro)
 4. Log group management (Pro)
 
-| Capability | Free | Pro |
+| Capability | NXDOMAIN | Pro |
 |---|:---:|:---:|
 | NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
@@ -102,7 +102,7 @@ This module uses **your real DNS query logs** inside AWS:
 ## How it works (simple architecture)
 
 This module:
-1. reads from an existing CloudWatch Logs group containing DNS logs (`free_log_group_name`)
+1. reads from an existing CloudWatch Logs group containing DNS logs (`NX_log_group_name`)
 2. creates:
    - Log metric filters → custom metrics in `Codreum/DNSCI`
    - CloudWatch alarms (static + rate % + anomaly)
@@ -119,6 +119,11 @@ This module:
 3. A CloudWatch Logs group already receiving DNS logs:
    - **Zone mode:** Route 53 hosted zone query logs (CLF-like fields include `hosted_zone_id`, `rcode`, `qname`, etc.)
    - **VPC mode:** JSON resolver query logs (fields include `vpc_id`, `rcode`, `srcaddr`, `query_name` / `qname`, etc.)
+4. Region constraints (AWS limitation)
+   - **Zone mode (`NX_zone_id`)**: Route 53 *public hosted zone* query logging requires the CloudWatch Logs log group in **`us-east-1` (US East / N. Virginia)**. Deploy this module in **`us-east-1`** for Zone mode. 
+   - **VPC mode (`NX_vpc_id`)**: Resolver query logging is **regional**. Create the query logging configuration and destination (CloudWatch log group) in the **same region as the VPC**. If you have VPCs in multiple regions, deploy one module per region.
+   - If you need both Zone + VPC monitoring across different regions, deploy **two module instances**: one in **`us-east-1`** for Zone mode, plus one per VPC region for Resolver mode.
+
 
 ---
 
@@ -127,11 +132,11 @@ This module:
 Required:
 - `prefix`
 - `aws_region`
-- `free_log_group_name`
+- `NX_log_group_name`
 - `dns_alert_sns_arn`
 - Provide at least one:
-  - `free_zone_id` (enables zone alarms/dashboards/widgets)
-  - `free_vpc_id` (enables vpc alarms/dashboards/widgets)
+  - `NX_zone_id` (enables zone alarms/dashboards/widgets)
+  - `NX_vpc_id` (enables vpc alarms/dashboards/widgets)
 
 You can enable zone monitoring, VPC monitoring, or both.
 
@@ -146,43 +151,45 @@ You can enable zone monitoring, VPC monitoring, or both.
 2) Copy/paste into `main.tf`:
 
 ```hcl
-module "codreum_dns_free" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
+module "codreum_dns_NX" {
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
 
   prefix              = "acme-dev"
   aws_region          = "us-east-1"
-  free_log_group_name = "/aws/route53/resolver-query-logs"  # must match your CloudWatch log group name
+  NX_log_group_name = "/aws/route53/resolver-query-logs"  # must match your CloudWatch log group name
   dns_alert_sns_arn   = "arn:aws:sns:us-east-1:123456789012:alerts" # change to your SNS ARN
 
   # Enable one or both:
-  free_vpc_id  = "vpc-0123456789abcdef0" # optional
-  free_zone_id = "Z123EXAMPLE"           # optional
+  NX_vpc_id  = "vpc-0123456789abcdef0" # optional
+  NX_zone_id = "Z123EXAMPLE"           # optional
 }
 ```
 You can also copy the main.tf file from example folder, and make the minimal edit
-- replace  module source with "github.com/Codreum/terraform-aws-dns-monitoring-free//modules?ref=v0.1.0"
-- Change free_log_group_name , dns_alert_sns_arn, free_vpc_id or/and free_zone_id to your own resource
+- replace  module source with "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
+- Change NX_log_group_name , dns_alert_sns_arn, NX_vpc_id or/and NX_zone_id to your own resource
+- Change the aws_region to the VPC Region, if you are using VPC Mode
+- If using Zone mode, make sure aws_region = "us-east-1" (required by Route 53 query logging)
 
 3. (optional) this module exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too into your own main.tf
 ```hcl
-output "dns_free_enabled" {
-  value = module.codreum_dns_free.enabled
+output "dns_NX_enabled" {
+  value = module.codreum_dns_NX.enabled
 }
 
-output "dns_free_dashboards" {
-  value = module.codreum_dns_free.dashboards
+output "dns_NX_dashboards" {
+  value = module.codreum_dns_NX.dashboards
 }
 
-output "dns_free_alarms" {
-  value = module.codreum_dns_free.alarms
+output "dns_NX_alarms" {
+  value = module.codreum_dns_NX.alarms
 }
 
-output "dns_free_metrics" {
-  value = module.codreum_dns_free.metrics
+output "dns_NX_metrics" {
+  value = module.codreum_dns_NX.metrics
 }
 
-output "dns_free_ci_rules" {
-  value = module.codreum_dns_free.contributor_insights_rules
+output "dns_NX_ci_rules" {
+  value = module.codreum_dns_NX.contributor_insights_rules
 }
 ```
 
@@ -199,15 +206,15 @@ terraform apply
 
 After `terraform apply`, you’ll have CloudWatch **dashboards**, **alarms**, and **Contributor Insights** rules created in your AWS account.
 
-> Tip: Open **CloudWatch → Dashboards** and search for your `prefix` (e.g., `acme-dev-free-*`).
+> Tip: Open **CloudWatch → Dashboards** and search for your `prefix` (e.g., `acme-dev-*`).
 
 ### 1) Dashboards (Ops / Zone / VPC)
 
 You’ll get an Ops landing page plus dashboards for the modes you enabled:
 
 - **Ops landing**: quick links + “what to check first”
-- **Zone dashboard** (if `free_zone_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N breakdowns
-- **VPC dashboard** (if `free_vpc_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N by source/qname
+- **Zone dashboard** (if `NX_zone_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N breakdowns
+- **VPC dashboard** (if `NX_vpc_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N by source/qname
 
 ![Dashboards](./screenshot/dashboard3.jpg)
 
