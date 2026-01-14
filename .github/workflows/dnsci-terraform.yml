@@ -158,7 +158,7 @@ jobs:
         run: terraform show -json tfplan > tfplan.json
 
       - name: Cache conftest
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb
         with:
           path: ${{ runner.temp }}/conftest
           key: conftest-0.58.0-${{ runner.os }}-x86_64
@@ -346,7 +346,7 @@ jobs:
         run: terraform show -json tfplan > tfplan.json
 
       - name: Cache conftest
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb
         with:
           path: ${{ runner.temp }}/conftest
           key: conftest-0.58.0-${{ runner.os }}-x86_64
