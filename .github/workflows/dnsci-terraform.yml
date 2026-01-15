@@ -146,11 +146,11 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
           TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
         run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
 
       - name: Terraform show (plan JSON)
@@ -334,11 +334,11 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
           TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
         run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
 
       - name: Terraform show (plan JSON)
@@ -427,10 +427,10 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
           TF_VAR_prefix: ci-${{ github.run_id }}-${{ github.run_attempt }}
         run: terraform apply -auto-approve -input=false -lock=false
       - name: Terraform output
@@ -445,10 +445,10 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
           TF_VAR_prefix: ci-${{ github.run_id }}-${{ github.run_attempt }}
         run: terraform destroy -auto-approve -input=false -lock=false
 
@@ -506,10 +506,10 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
           TF_VAR_prefix: ci-latest-${{ github.run_id }}-${{ github.run_attempt }}
         run: terraform apply -auto-approve -input=false -lock=false
 
@@ -525,10 +525,10 @@ jobs:
         env:
           TF_IN_AUTOMATION: "true"
           TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
-          TF_VAR_free_zone_id: ${{ vars.TF_VAR_free_zone_id }}
-          TF_VAR_free_log_group_name: ${{ vars.TF_VAR_free_log_group_name }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
           TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
-          TF_VAR_free_vpc_id: ${{ vars.TF_VAR_free_vpc_id }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
           TF_VAR_prefix: ci-latest-${{ github.run_id }}-${{ github.run_attempt }}
         run: terraform destroy -auto-approve -input=false -lock=false
 
