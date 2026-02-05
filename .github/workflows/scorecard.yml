@@ -1,0 +1,47 @@
+name: Scorecards supply-chain security
+
+on:
+  branch_protection_rule:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: "30 17 * * 6" # Sun 01:30 Asia/Kuala_Lumpur
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecards analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      actions: read
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@8e8c4d7891da8d5f8e5f8c1f9d45d4b7684b5c2d
+        with:
+          persist-credentials: false
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+          # Optional: enable branch-protection check for public repos by setting a PAT secret.
+          # repo_token: ${{ secrets.SCORECARD_TOKEN }}
+
+      - name: Upload results (artifact)
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 5
+
+      - name: Upload results to code scanning
+        uses: github/codeql-action/upload-sarif@38e701f46e33fb233075bf4238cb1e5d68e429e4
+        with:
+          sarif_file: results.sarif

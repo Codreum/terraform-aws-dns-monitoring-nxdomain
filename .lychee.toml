@@ -1,0 +1,23 @@
+# .lychee.toml
+verbose = true
+no_progress = true
+timeout = 20
+max_redirects = 10
+max_retries = 3
+retry_wait_time = 2
+
+# Don't fail builds on rate-limit responses from GitHub etc.
+accept = [200, 206, 301, 302, 303, 307, 308, 429]
+
+# Skip local/dev links
+exclude = [
+  '^https?://localhost',
+  '^https?://127\\.0\\.0\\.1',
+]
+
+# Skip scanning generated/cache dirs
+exclude_path = [
+  ".terraform/",
+  "vendor/",
+  "node_modules/",
+]

@@ -1,4 +1,28 @@
 <p align="center">
+  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml">
+    <img src="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI">
+  </a>
+
+  <a href="https://scorecard.dev/viewer/?uri=github.com/Codreum/terraform-aws-dns-monitoring-nxdomain">
+    <img src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge" alt="OpenSSF Scorecard">
+  </a>
+
+  <a href="https://bestpractices.coreinfrastructure.org/projects/XXXXX">
+    <img src="https://bestpractices.coreinfrastructure.org/projects/XXXXX/badge" alt="CII Best Practices">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/releases">
+    <img src="https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain" alt="Release">
+  </a>
+
+  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain" alt="License">
+  </a>
+</p>
+
+<p align="center">
   <a href="https://www.codreum.com">
     <img src="docs/brand/logo.png" alt="Codreum" width="200" />
   </a>

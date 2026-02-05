@@ -3,17 +3,73 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 permissions:
   contents: write
+  id-token: write
+  attestations: write
+  actions: read
 
 jobs:
-  github-release:
-    name: Create GitHub Release
+  release:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Create release
+      - name: Checkout
+        uses: actions/checkout@8e8c4d7891da8d5f8e5f8c1f9d45d4b7684b5c2d
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Package source (tar.gz)
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # Archive the exact source at the tag (no .git, reproducible-ish)
+          git archive --format=tar.gz --prefix="${GITHUB_REPOSITORY##*/}/" -o "dist/${GITHUB_REPOSITORY##*/}-${GITHUB_REF_NAME}.tar.gz" "${GITHUB_REF_NAME}"
+          (cd dist && sha256sum *.tar.gz > SHA256SUMS)
+
+      # SBOM (pinned). This writes an SPDX JSON SBOM file we can attach to the release.
+      - name: Generate SBOM (Syft via Anchore Action)
+        uses: anchore/sbom-action@8e94d75ddd33f69f691467e42275782e4bfefe84
+        with:
+          format: spdx-json
+          output-file: dist/sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      # Provenance attestation for the artifacts we ship (pinned).
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-path: |
+            dist/*.tar.gz
+            dist/SHA256SUMS
+            dist/sbom.spdx.json
+
+      # Optional: keyless Sigstore signing of your release artifacts.
+      # Uses a pinned installer example from Sigstore docs/blog. :contentReference[oaicite:3]{index=3}
+      - name: Install cosign (optional signing)
+        uses: sigstore/cosign-installer@6e04d228eb30da1757ee4e1dd75a0ec73a653e06
+
+      - name: Cosign sign artifacts (optional)
+        run: |
+          set -euo pipefail
+          cosign version
+          for f in dist/*.tar.gz dist/SHA256SUMS dist/sbom.spdx.json; do
+            cosign sign-blob --yes "$f" \
+              --output-signature "${f}.sig" \
+              --output-certificate "${f}.crt"
+          done
+
+      - name: Create GitHub Release + upload assets
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           generate_release_notes: true
+          files: |
+            dist/*.tar.gz
+            dist/SHA256SUMS
+            dist/sbom.spdx.json
+            dist/*.sig
+            dist/*.crt
