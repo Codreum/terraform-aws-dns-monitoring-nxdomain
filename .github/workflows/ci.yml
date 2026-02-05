@@ -1,0 +1,535 @@
+name: CI - Terraform
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 18 * * *"  # 02:00 Malaysia time daily
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: ci-terraform-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+
+jobs:
+  terraform-fmt:
+    name: terraform fmt (repo)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: "1.14.0"
+          terraform_wrapper: false
+
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive
+
+  terraform-validate-modules:
+    name: terraform validate (modules)
+    runs-on: ubuntu-latest
+    needs: terraform-fmt
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: "1.14.0"
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: modules
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: modules
+        run: terraform validate
+
+  terraform-validate-examples:
+    name: terraform validate (examples)
+    runs-on: ubuntu-latest
+    needs: terraform-fmt
+
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+          - example/zone-only
+          - example/vpc-only
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: "1.14.0"
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: ${{ matrix.dir }}
+        run: terraform validate
+
+  terraform-plan-examples:
+    name: terraform plan (examples)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+
+    needs:
+      - terraform-fmt
+      - terraform-validate-modules
+      - terraform-validate-examples
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && github.event_name != 'schedule'
+      && (
+        (
+          github.event_name == 'pull_request'
+          && github.event.pull_request.head.repo.full_name == github.repository
+          && github.event.pull_request.user.login != 'dependabot[bot]'
+        )
+        || (
+          github.event_name == 'push'
+          && github.actor != 'dependabot[bot]'
+          && github.actor != 'dependabot'
+        )
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+          - example/zone-only
+          - example/vpc-only
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: "1.14.0"
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform plan
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+        run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
+
+      - name: Terraform show (plan JSON)
+        working-directory: ${{ matrix.dir }}
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Cache conftest
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb
+        with:
+          path: ${{ runner.temp }}/conftest
+          key: conftest-0.58.0-${{ runner.os }}-x86_64
+
+      - name: Install conftest
+        run: |
+          set -euo pipefail
+          if [ -f "${RUNNER_TEMP}/conftest" ]; then
+            sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+            conftest --version
+            exit 0
+          fi
+
+          CONFTEST_VERSION="0.58.0"
+          curl -sSL -o /tmp/conftest.tar.gz "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/conftest.tar.gz -C /tmp conftest
+          mv /tmp/conftest "${RUNNER_TEMP}/conftest"
+          sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+          conftest --version
+
+      - name: Conftest policy check (tfplan)
+        working-directory: ${{ matrix.dir }}
+        run: |
+          test -d "${{ github.workspace }}/policy"
+          conftest test tfplan.json -p "${{ github.workspace }}/policy" --all-namespaces
+
+
+  terraform-docs:
+    name: terraform-docs (modules)
+    runs-on: ubuntu-latest
+    needs: terraform-fmt
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Render terraform docs
+        uses: terraform-docs/gh-actions@6de6da0cefcc6b4b7a5cbea4d79d97060733093c
+        with:
+          working-dir: modules
+          output-file: README.md
+          output-method: inject
+          git-push: "false"
+
+      - name: Fail if docs changed
+        run: |
+          git diff --exit-code
+
+  terraform-validate-modules-latest:
+    name: terraform validate (modules) (latest)
+    runs-on: ubuntu-latest
+    needs: terraform-fmt
+
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && (
+        github.event_name == 'schedule'
+        || github.event_name == 'workflow_dispatch'
+        || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Setup Terraform (latest)
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: modules
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: modules
+        run: terraform validate
+
+
+  terraform-validate-examples-latest:
+    name: terraform validate (examples) (latest)
+    runs-on: ubuntu-latest
+    needs: terraform-fmt
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && (
+        github.event_name == 'schedule'
+        || github.event_name == 'workflow_dispatch'
+        || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+          - example/zone-only
+          - example/vpc-only
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Setup Terraform (latest)
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform validate
+        working-directory: ${{ matrix.dir }}
+        run: terraform validate
+
+
+  terraform-plan-examples-latest:
+    name: terraform plan (examples) (latest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+
+    needs:
+      - terraform-fmt
+      - terraform-validate-modules-latest
+      - terraform-validate-examples-latest
+
+    # Don't run AWS-authenticated job for fork PR
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && github.actor != 'dependabot[bot]'
+      && github.actor != 'dependabot'
+      && (
+        github.event_name == 'schedule'
+        || github.event_name == 'workflow_dispatch'
+        || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+      )
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+          - example/zone-only
+          - example/vpc-only
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform (latest)
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform plan
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_prefix: ${{ vars.TF_VAR_prefix }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+        run: terraform plan -out=tfplan -lock=false -input=false -refresh=false
+
+      - name: Terraform show (plan JSON)
+        working-directory: ${{ matrix.dir }}
+        run: terraform show -json tfplan > tfplan.json
+
+      - name: Cache conftest
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb
+        with:
+          path: ${{ runner.temp }}/conftest
+          key: conftest-0.58.0-${{ runner.os }}-x86_64
+
+      - name: Install conftest
+        run: |
+          set -euo pipefail
+          if [ -f "${RUNNER_TEMP}/conftest" ]; then
+            sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+            conftest --version
+            exit 0
+          fi
+
+          CONFTEST_VERSION="0.58.0"
+          curl -sSL -o /tmp/conftest.tar.gz "https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/conftest.tar.gz -C /tmp conftest
+          mv /tmp/conftest "${RUNNER_TEMP}/conftest"
+          sudo install -m 0755 "${RUNNER_TEMP}/conftest" /usr/local/bin/conftest
+          conftest --version
+
+      - name: Conftest policy check (tfplan)
+        working-directory: ${{ matrix.dir }}
+        run: |
+          test -d "${{ github.workspace }}/policy"
+          conftest test tfplan.json -p "${{ github.workspace }}/policy" --all-namespaces
+
+  terraform-apply-destroy-smoke:
+    name: terraform apply + destroy (smoke)
+    environment: aws-ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+
+    needs:
+      - terraform-fmt
+      - terraform-validate-modules
+      - terraform-validate-examples
+      - terraform-plan-examples
+
+    # IMPORTANT: do NOT apply on PRs. Only run on push to main.
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && github.event_name == 'push'
+      && github.ref == 'refs/heads/main'
+      && github.actor != 'dependabot[bot]'
+      && github.actor != 'dependabot'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: "1.14.0"
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform apply
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+          TF_VAR_prefix: ci-${{ github.run_id }}-${{ github.run_attempt }}
+        run: terraform apply -auto-approve -input=false -lock=false
+      - name: Terraform output
+        if: always()
+        working-directory: ${{ matrix.dir }}
+        run: terraform output -json || true
+
+      - name: Terraform destroy (always)
+        if: always()
+        continue-on-error: true
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+          TF_VAR_prefix: ci-${{ github.run_id }}-${{ github.run_attempt }}
+        run: terraform destroy -auto-approve -input=false -lock=false
+
+
+  terraform-apply-destroy-smoke-latest:
+    name: terraform apply + destroy (smoke) (latest)
+    environment: aws-ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs:
+      - terraform-fmt
+      - terraform-validate-modules-latest
+      - terraform-validate-examples-latest
+      - terraform-plan-examples-latest
+    if: |
+      github.repository == 'Codreum/terraform-aws-dns-monitoring-nxdomain'
+      && github.actor != 'dependabot[bot]'
+      && github.actor != 'dependabot'
+      && (
+        github.event_name == 'schedule'
+        || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      )
+    permissions:
+      contents: read
+      id-token: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - example/both-zone-vpc
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@ff717079ee2060e4bcee96c4779b553acc87447c
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup Terraform (latest)
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
+        with:
+          terraform_version: latest
+          terraform_wrapper: false
+
+      - name: Terraform init (no backend)
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false
+
+      - name: Terraform apply (latest)
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+          TF_VAR_prefix: ci-latest-${{ github.run_id }}-${{ github.run_attempt }}
+        run: terraform apply -auto-approve -input=false -lock=false
+
+      - name: Terraform output (latest)
+        if: always()
+        working-directory: ${{ matrix.dir }}
+        run: terraform output -json || true
+
+      - name: Terraform destroy (latest) (always)
+        if: always()
+        continue-on-error: true
+        working-directory: ${{ matrix.dir }}
+        env:
+          TF_IN_AUTOMATION: "true"
+          TF_VAR_aws_region: ${{ vars.TF_VAR_aws_region }}
+          TF_VAR_NX_zone_id: ${{ vars.TF_VAR_NX_zone_id }}
+          TF_VAR_NX_log_group_name: ${{ vars.TF_VAR_NX_log_group_name }}
+          TF_VAR_dns_alert_sns_arn: ${{ vars.TF_VAR_dns_alert_sns_arn }}
+          TF_VAR_NX_vpc_id: ${{ vars.TF_VAR_NX_vpc_id }}
+          TF_VAR_prefix: ci-latest-${{ github.run_id }}-${{ github.run_attempt }}
+        run: terraform destroy -auto-approve -input=false -lock=false
+
+

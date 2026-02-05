@@ -4,14 +4,7 @@ repos:
       - id: terraform-docs
         name: terraform-docs (inject modules/README.md)
         language: system
-        entry: powershell
-        args:
-          - -NoProfile
-          - -ExecutionPolicy
-          - Bypass
-          - -Command
-          - >
-            if (Test-Path "modules") { Set-Location "modules" };
-            terraform-docs markdown table --output-file README.md --output-mode inject .
+        entry: python3 scripts/terraform_docs_hook.py
+        args: []
         pass_filenames: false
         files: ^modules/
