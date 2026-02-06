@@ -7,15 +7,19 @@ assignees: []
 ---
 
 ## Problem statement
+
 What problem are you trying to solve? Why is it painful today?
 
 ## Proposed solution
+
 Describe what you want to happen.
 
 ## Alternatives considered
+
 Other approaches you considered (if any).
 
 ## Scope
+
 - [ ] Zone scope (Route 53 hosted zone logs)
 - [ ] VPC scope (Resolver/VPC logs)
 - [ ] Dashboards
@@ -24,4 +28,5 @@ Other approaches you considered (if any).
 - [ ] Docs / Examples / CI
 
 ## Additional context
+
 Anything else that helps (links, diagrams, screenshots).

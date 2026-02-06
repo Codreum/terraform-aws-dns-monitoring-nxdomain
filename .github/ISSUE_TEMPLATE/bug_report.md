@@ -7,20 +7,25 @@ assignees: []
 ---
 
 ## Summary
+
 A clear and concise description of the bug.
 
 ## Expected behavior
+
 What you expected to happen.
 
 ## Actual behavior
+
 What actually happened (include error messages).
 
 ## Steps to reproduce
-1.
-2.
-3.
+
+1. <step 1>
+2. <step 2>
+3. <step 3>
 
 ## Environment
+
 - Terraform version:
 - AWS provider version:
 - Module version/ref:
@@ -28,6 +33,7 @@ What actually happened (include error messages).
 - OS / Shell:
 
 ## Configuration (sanitized)
+
 Paste the relevant parts of your Terraform config (remove secrets/account IDs if needed):
 
 ```hcl
@@ -35,6 +41,7 @@ Paste the relevant parts of your Terraform config (remove secrets/account IDs if
 ```
 
 ## Logs / output
+
 Include relevant command output:
 
 ```text
@@ -43,4 +50,5 @@ terraform plan
 ```
 
 ## Additional context
+
 Anything else that helps (screenshots, links, related issues).
