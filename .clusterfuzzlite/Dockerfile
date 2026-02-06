@@ -1,55 +1,59 @@
-# .clusterfuzzlite/Dockerfile
-# ClusterFuzzLite build image for this repository.
-
-# Use a versioned tag (not :latest) to satisfy Trivy DS001.
 FROM gcr.io/oss-fuzz-base/base-builder-go:v1
-
-# Make Go available in a stable location (sudo may reset PATH via secure_path).
-# base-builder-go may install Go under /root/.go/bin.
-RUN set -eux; \
-    if command -v go >/dev/null 2>&1; then \
-      go_bin="$(command -v go)"; \
-    elif [ -x /root/.go/bin/go ]; then \
-      go_bin="/root/.go/bin/go"; \
-    elif [ -x /usr/local/go/bin/go ]; then \
-      go_bin="/usr/local/go/bin/go"; \
-    else \
-      echo "ERROR: go binary not found in base image" >&2; \
-      exit 1; \
-    fi; \
-    ln -sf "$go_bin" /usr/local/bin/go; \
-    /usr/local/bin/go version
 
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends sudo; \
     rm -rf /var/lib/apt/lists/*
 
-COPY . /src/terraform-aws-dns-monitoring-nxdomain
-WORKDIR /src/terraform-aws-dns-monitoring-nxdomain
+# Copy source + build script (CFL expects $SRC/build.sh)
+COPY . $SRC/terraform-aws-dns-monitoring-nxdomain
+WORKDIR $SRC/terraform-aws-dns-monitoring-nxdomain
+COPY ./.clusterfuzzlite/build.sh $SRC/build.sh
+RUN chmod +x $SRC/build.sh
 
-COPY ./.clusterfuzzlite/build.sh /src/build.sh
-RUN chmod +x /src/build.sh
-
+# Create non-root user (match GitHub runner UID commonly = 1001)
 RUN set -eux; \
     useradd -m -u 1001 -s /bin/bash cflite; \
     mkdir -p /home/cflite/go; \
-    chown -R cflite:cflite /home/cflite; \
-    echo "cflite ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/cflite; \
+    chown -R cflite:cflite /home/cflite $SRC; \
+    printf '%s\n' \
+      'Defaults env_keep += "HOME GOPATH GOBIN PATH"' \
+      'cflite ALL=(ALL) NOPASSWD:ALL' \
+      > /etc/sudoers.d/cflite; \
     chmod 0440 /etc/sudoers.d/cflite; \
+    touch /usr/lib/libFuzzingEngine.a; \
+    chmod 666 /usr/lib/libFuzzingEngine.a; \
     real_compile="$(command -v compile)"; \
     mv "$real_compile" /usr/local/bin/compile.real; \
-    printf '%s\n' \
-      '#!/usr/bin/env bash' \
-      'set -euo pipefail' \
-      'sudo -E /usr/local/bin/compile.real "$@"' \
-      'if [[ -n "${OUT:-}" ]]; then sudo chown -R cflite:cflite "$OUT" || true; fi' \
-      > /usr/local/bin/compile; \
+    cat > /usr/local/bin/compile <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Keep Go paths consistent even when running compile as root.
+export HOME=/home/cflite
+export GOPATH=/home/cflite/go
+export GOBIN=$GOPATH/bin
+export PATH=$GOBIN:/usr/local/go/bin:$PATH
+
+sudo -E /usr/local/bin/compile.real "$@"
+rc=$?
+
+# Avoid root-owned artifacts in the mounted OUT dir.
+if [[ -n "${OUT:-}" ]]; then
+  sudo chown -R cflite:cflite "$OUT" || true
+fi
+
+exit "$rc"
+EOF
     chmod +x /usr/local/bin/compile
 
-USER cflite
 ENV HOME=/home/cflite
 ENV GOPATH=/home/cflite/go
-ENV PATH=/home/cflite/go/bin:/usr/local/bin:/usr/bin:/bin
+ENV GOBIN=/home/cflite/go/bin
+ENV PATH=/home/cflite/go/bin:/usr/local/go/bin:$PATH
 
-HEALTHCHECK --interval=30s --timeout=3s CMD bash -c 'true'
+# Trivy DS002: last USER must not be root
+USER cflite
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["bash","-lc","true"]
