@@ -3,6 +3,9 @@ set -euo pipefail
 
 cd "$SRC/terraform-aws-dns-monitoring-nxdomain"
 
+# Ensure go-installed binaries land in a PATH location that OSS-Fuzz helpers can see
+export GOBIN=/usr/local/bin
+
 # Needed by compile_native_go_fuzzer for native Go fuzzers.
 go install github.com/AdamKorcz/go-118-fuzz-build@latest
 go get github.com/AdamKorcz/go-118-fuzz-build/testing
