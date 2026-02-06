@@ -1,1 +1,10 @@
+# Normalize all text files to LF so Docker and bash scripts don't break in CI.
+* text=auto eol=lf
+
+# Explicitly enforce common CI/script formats.
 *.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+Dockerfile text eol=lf
+**/Dockerfile text eol=lf
