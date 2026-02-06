@@ -4,10 +4,7 @@ set -euo pipefail
 cd "$SRC/terraform-aws-dns-monitoring-nxdomain"
 
 # Ensure Go + installed tools are always found.
-export HOME=/home/cflite
-export GOPATH=/home/cflite/go
-export GOBIN="$GOPATH/bin"
-export PATH="$GOBIN:/usr/local/go/bin:$PATH"
+export PATH="${GOBIN:-$GOPATH/bin}:/usr/local/go/bin:$PATH"
 
 go install github.com/AdamKorcz/go-118-fuzz-build@latest
 go get github.com/AdamKorcz/go-118-fuzz-build/testing@latest

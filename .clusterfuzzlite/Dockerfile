@@ -6,18 +6,20 @@ FROM gcr.io/oss-fuzz-base/base-builder-go:v1
 
 # Make Go available in a stable location (sudo may reset PATH via secure_path).
 # base-builder-go may install Go under /root/.go/bin.
+# Ensure Go toolchain is accessible to the non-root user.
 RUN set -eux; \
-    if command -v go >/dev/null 2>&1; then \
-      go_bin="$(command -v go)"; \
+    if [ -x /usr/local/go/bin/go ]; then \
+      echo "Go already in /usr/local/go"; \
     elif [ -x /root/.go/bin/go ]; then \
-      go_bin="/root/.go/bin/go"; \
-    elif [ -x /usr/local/go/bin/go ]; then \
-      go_bin="/usr/local/go/bin/go"; \
+      echo "Copying Go from /root/.go -> /usr/local/go"; \
+      mkdir -p /usr/local/go; \
+      cp -a /root/.go/. /usr/local/go/; \
+      chmod -R a+rX /usr/local/go; \
     else \
-      echo "ERROR: go binary not found in base image" >&2; \
+      echo "ERROR: go toolchain not found" >&2; \
       exit 1; \
     fi; \
-    ln -sf "$go_bin" /usr/local/bin/go; \
+    ln -sf /usr/local/go/bin/go /usr/local/bin/go; \
     /usr/local/bin/go version
 
 RUN set -eux; \
@@ -42,14 +44,24 @@ RUN set -eux; \
     printf '%s\n' \
       '#!/usr/bin/env bash' \
       'set -euo pipefail' \
-      'sudo -E /usr/local/bin/compile.real "$@"' \
+      'sudo -E env \
+         GOPATH=/root/go \
+         GOBIN=/root/go/bin \
+         HOME=/root \
+         PATH="/root/go/bin:$PATH" \
+         /usr/local/bin/compile.real "$@"' \
       'if [[ -n "${OUT:-}" ]]; then sudo chown -R cflite:cflite "$OUT" || true; fi' \
       > /usr/local/bin/compile; \
     chmod +x /usr/local/bin/compile
 
+RUN set -eux; \
+    mkdir -p /home/cflite/go/gosigfuzz; \
+    cp /root/go/gosigfuzz/gosigfuzz.o /home/cflite/go/gosigfuzz/; \
+    chown -R cflite:cflite /home/cflite/go/gosigfuzz
+
 USER cflite
 ENV HOME=/home/cflite
 ENV GOPATH=/home/cflite/go
-ENV PATH=/home/cflite/go/bin:/usr/local/bin:/usr/bin:/bin
+ENV PATH=/home/cflite/go/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin
 
 HEALTHCHECK --interval=30s --timeout=3s CMD bash -c 'true'
