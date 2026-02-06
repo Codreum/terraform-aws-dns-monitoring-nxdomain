@@ -1,23 +1,13 @@
-# .lychee.toml
-verbose = true
-no_progress = true
+# keep CI stable: don't fail on transient rate-limits
 timeout = 20
-max_redirects = 10
-max_retries = 3
+max_retries = 2
 retry_wait_time = 2
 
-# Don't fail builds on rate-limit responses from GitHub etc.
-accept = [200, 206, 301, 302, 303, 307, 308, 429]
-
-# Skip local/dev links
+# ignore localhost-style or example placeholders if you have them
 exclude = [
-  '^https?://localhost',
-  '^https?://127\\.0\\.0\\.1',
+  "http://localhost",
+  "https://localhost"
 ]
 
-# Skip scanning generated/cache dirs
-exclude_path = [
-  ".terraform/",
-  "vendor/",
-  "node_modules/",
-]
+# GitHub sometimes rate-limits anonymous link checks
+accept = [200, 206, 429]
