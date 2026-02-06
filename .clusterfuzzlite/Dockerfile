@@ -24,7 +24,7 @@ RUN set -eux; \
 
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends sudo; \
+    apt-get install -y --no-install-recommends sudo procps; \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /src/terraform-aws-dns-monitoring-nxdomain
@@ -48,7 +48,7 @@ RUN set -eux; \
          GOPATH=/root/go \
          GOBIN=/root/go/bin \
          HOME=/root \
-         PATH="/root/go/bin:$PATH" \
+         PATH="/root/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
          /usr/local/bin/compile.real "$@"' \
       'if [[ -n "${OUT:-}" ]]; then sudo chown -R cflite:cflite "$OUT" || true; fi' \
       > /usr/local/bin/compile; \
@@ -62,6 +62,6 @@ RUN set -eux; \
 USER cflite
 ENV HOME=/home/cflite
 ENV GOPATH=/home/cflite/go
-ENV PATH=/home/cflite/go/bin:/usr/local/go/bin:/usr/local/bin:/usr/bin:/bin
+ENV PATH=/home/cflite/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 HEALTHCHECK --interval=30s --timeout=3s CMD bash -c 'true'
