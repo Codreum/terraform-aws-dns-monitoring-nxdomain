@@ -65,4 +65,4 @@ htmlcov/
 *.tfplan
 *.plan
 .terraform.lock.hcl.backup
-
+oss-fuzz/

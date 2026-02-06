@@ -21,6 +21,8 @@ jobs:
           tflint_version: v0.55.0
 
       - name: Init TFLint plugins
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: tflint --init
 
       - name: Run TFLint (repo)

@@ -1,0 +1,8 @@
+{
+  "config": {
+    "default": true,
+    "MD013": false,              // line length
+    "MD033": false,              // allow inline HTML (badges, <p align="center">, etc.)
+    "MD041": false               // first line heading (some READMEs start with badges)
+  }
+}

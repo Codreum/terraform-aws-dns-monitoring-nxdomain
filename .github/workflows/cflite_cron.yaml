@@ -1,0 +1,28 @@
+name: ClusterFuzzLite cron tasks
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # daily
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  Prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build fuzzers
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          language: go
+
+      - name: Prune corpus
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          mode: prune
+          fuzz-seconds: 600
+          output-sarif: true
