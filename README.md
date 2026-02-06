@@ -1,24 +1,24 @@
 <p align="center">
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml">
-    <img src="[https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main"](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main") alt="CI">
+    <img src="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main"](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main") alt="CI">
   </a>
 
   <a href="https://scorecard.dev/viewer/?uri=github.com/Codreum/terraform-aws-dns-monitoring-nxdomain">
-    <img src="[https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"](https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge") alt="OpenSSF Scorecard">
+    <img src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"](https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge") alt="OpenSSF Scorecard">
   </a>
 
   <a href="https://bestpractices.coreinfrastructure.org/projects/11896">
-    <img src="[https://bestpractices.coreinfrastructure.org/projects/11896/badge"](https://bestpractices.coreinfrastructure.org/projects/11896/badge") alt="CII Best Practices">
+    <img src="https://bestpractices.coreinfrastructure.org/projects/11896/badge"](https://bestpractices.coreinfrastructure.org/projects/11896/badge") alt="CII Best Practices">
   </a>
 </p>
 
 <p align="center">
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/releases">
-    <img src="[https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="Release">
+    <img src="https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="Release">
   </a>
 
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/LICENSE">
-    <img src="[https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="License">
+    <img src="https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="License">
   </a>
 </p>
 
@@ -176,8 +176,9 @@ You can enable zone monitoring, VPC monitoring, or both.
 ## Quickstart
 
 1. Ensure DNS query logs are flowing into CloudWatch Logs:
-- Hosted zone query logs (CLF-like)
-- Resolver query logs (JSON)
+
+   - Hosted zone query logs (CLF-like)
+   - Resolver query logs (JSON)
 
 1. Copy/paste into `main.tf`:
 
@@ -297,7 +298,7 @@ Contributor Insights rules are used for “Top-N” analysis (fast triage):
 
 ![Contributor Insights](./screenshot/CI2.jpg)
 
-#### How to use
+#### How to use (Contributor Insights)
 
 - Open **CloudWatch → Contributor Insights**
 - Filter by your `prefix`
