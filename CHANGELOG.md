@@ -8,19 +8,19 @@ The format is based on *Keep a Changelog* and this project follows *Semantic Ver
 
 ### Added
 
-- _None yet._
+- *None yet.*
 
 ### Changed
 
-- _None yet._
+- *None yet.*
 
 ### Fixed
 
-- _None yet._
+- *None yet.*
 
 ### Security
 
-- _None yet._
+- *None yet.*
 
 ## [0.1.0] - 2026-01-06
 
