@@ -1,36 +1,33 @@
 # .clusterfuzzlite/Dockerfile
 #
-# NOTE:
-# ClusterFuzzLite / OSS-Fuzz build images typically need to run as root during the
-# "compile" phase because the toolchain writes into system paths (e.g. /usr/lib).
-# If the final USER is non-root, you'll see errors like:
-#   cp: cannot create regular file '/usr/lib/libFuzzingEngine.a': Permission denied
+# Goal:
+# - PASS Trivy DS002 (last USER must be non-root)
+# - Still allow ClusterFuzzLite's built-in "compile" step to run without needing root.
 #
-# To satisfy Dockerfile linters (e.g. Trivy DS002), we include a non-root USER
-# directive, then switch back to root for the actual build runtime.
+# Why this works:
+# The OSS-Fuzz toolchain writes libFuzzer's engine to /usr/lib/libFuzzingEngine.a.
+# When running as a non-root user, that write fails unless the target file is writable.
+# We pre-create the file and give ownership to the non-root user so `cp` can overwrite it.
 
-# Pin to a tag (avoids Trivy DS001 "latest tag" finding)
 FROM gcr.io/oss-fuzz-base/base-builder-go:v1
 
-# Copy your project's source code into $SRC (OSS-Fuzz convention)
+# Copy your project's source code.
 COPY . $SRC/terraform-aws-dns-monitoring-nxdomain
 WORKDIR $SRC/terraform-aws-dns-monitoring-nxdomain
 
 # ClusterFuzzLite expects build.sh at $SRC/build.sh
 COPY ./.clusterfuzzlite/build.sh $SRC/build.sh
 
-# Create an unprivileged user (satisfies Trivy DS002), but do NOT keep it as the final user.
-RUN useradd -m -u 1000 -s /bin/bash cflite &&     mkdir -p /home/cflite/go &&     chown -R cflite:cflite /home/cflite
+# Create an unprivileged user.
+RUN useradd -m -u 1000 -s /bin/bash cflite &&     mkdir -p /home/cflite/go &&     chown -R cflite:cflite /home/cflite &&         
+    touch /usr/lib/libFuzzingEngine.a &&     chown cflite:cflite /usr/lib/libFuzzingEngine.a &&     chmod 664 /usr/lib/libFuzzingEngine.a
 
-# Optional: ensure Go tool installs are writable (if you ever run as cflite)
+# Make Go installs writable for the non-root user.
 ENV GOPATH=/home/cflite/go
 ENV PATH=$PATH:/home/cflite/go/bin
 
-# Satisfy DS002 (at least one USER non-root) ...
+# Trivy DS002: last USER should not be root
 USER cflite
 
-# ... then switch back to root so the OSS-Fuzz toolchain can write into /usr/lib, etc.
-USER root
-
-# Healthcheck (addresses Trivy DS026). Not used by CFL, but harmless.
+# Trivy DS026: healthcheck (not used by CFL build containers, but satisfies linters)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3   CMD ["bash","-lc","true"]
