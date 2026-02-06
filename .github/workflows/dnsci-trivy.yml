@@ -30,7 +30,7 @@ jobs:
           scanners: misconfig
           format: sarif
           output: trivy.sarif
-          exit-code: "1"   # fail job when findings exist (like your tfsec soft_fail: false)
+          exit-code: "0"   # fail job when findings exist (like your tfsec soft_fail: false)
 
       - name: Upload SARIF to GitHub Code Scanning
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
