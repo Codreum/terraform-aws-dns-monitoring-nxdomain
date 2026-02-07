@@ -6,10 +6,12 @@ on:
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   Batch:
+    permissions:
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

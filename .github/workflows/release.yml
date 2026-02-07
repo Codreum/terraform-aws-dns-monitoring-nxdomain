@@ -6,13 +6,15 @@ on:
       - 'v*.*.*'
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
-  actions: read
+  contents: read
 
 jobs:
   release:
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      actions: read
     runs-on: ubuntu-latest
 
     steps:
