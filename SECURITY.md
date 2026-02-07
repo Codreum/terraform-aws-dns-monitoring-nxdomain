@@ -46,6 +46,3 @@ This repo contains Terraform infrastructure code (no runtime service). Security 
 * IAM policy overly broad permissions
 
 Supply chain issues in CI tooling
-
-
-
