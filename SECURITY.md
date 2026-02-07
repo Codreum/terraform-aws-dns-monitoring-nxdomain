@@ -35,7 +35,7 @@ If you believe active exploitation is occurring, please note that in your report
 Security fixes are provided for:
 
 * The latest released version
-* Recent minor versions where feasible
+* Recent minor versions where feasibles
 
 ## Scope
 
