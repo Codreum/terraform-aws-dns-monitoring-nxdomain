@@ -2,7 +2,7 @@
 # ClusterFuzzLite build image for this repository.
 
 # Use a versioned tag (not :latest) to satisfy Trivy DS001.
-FROM gcr.io/oss-fuzz-base/base-builder-go:v1
+FROM gcr.io/oss-fuzz-base/base-builder-go@sha256:13d4331a06770446c7bcc57dd5db70616a6fd09a06c219e33fcd15fac22da7c7
 
 # Make Go available in a stable location (sudo may reset PATH via secure_path).
 # base-builder-go may install Go under /root/.go/bin.
