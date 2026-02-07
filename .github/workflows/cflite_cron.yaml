@@ -6,10 +6,12 @@ on:
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   Prune:
+    permissions:
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Build fuzzers
