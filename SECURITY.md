@@ -30,8 +30,6 @@ We follow **coordinated vulnerability disclosure**.
 
 If you believe active exploitation is occurring, please note that in your report so we can prioritize.
 
-
-
 ## Supported versions
 
 Security fixes are provided for:
