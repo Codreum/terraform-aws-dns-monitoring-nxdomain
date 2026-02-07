@@ -35,7 +35,7 @@ If you believe active exploitation is occurring, please note that in your report
 Security fixes are provided for:
 
 * The latest released version
-* Recent minor versions where feasibles
+* Recent minor versions where feasible
 
 ## Scope
 
@@ -46,4 +46,6 @@ This repo contains Terraform infrastructure code (no runtime service). Security 
 * IAM policy overly broad permissions
 
 Supply chain issues in CI tooling
+
+
 
