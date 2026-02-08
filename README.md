@@ -39,7 +39,9 @@
 Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using **AWS CloudWatch + Terraform**.
 
 ✅ Dashboards + alarms + anomaly detection
+
 ✅ Works with **Route 53 hosted zone query logs** + **Resolver query logs (VPC)**
+
 ✅ Top-N triage views (domain / qtype / edge / source)
 
 This solution is for **NXDOMAIN signals only**. **Codreum Pro** adds broader DNS error metrics and investigation dashboards.
