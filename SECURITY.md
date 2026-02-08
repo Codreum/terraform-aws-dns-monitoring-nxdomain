@@ -1,6 +1,10 @@
-# Security Policy
+\# Security Policy
 
-## Reporting a vulnerability
+
+
+\## Reporting a vulnerabilty
+
+
 
 If you discover a security issue, please **do not** open a public GitHub issue.
 
@@ -18,7 +22,11 @@ Please include:
 
 We will acknowledge receipt and work with you on an appropriate fix timeline.
 
-## Disclosure \& response timelines
+
+
+\## Disclosure \& response timelines
+
+
 
 We follow **coordinated vulnerability disclosure**.
 
@@ -30,14 +38,22 @@ We follow **coordinated vulnerability disclosure**.
 
 If you believe active exploitation is occurring, please note that in your report so we can prioritize.
 
-## Supported versions
+
+
+\## Supported Version
+
+
 
 Security fixes are provided for:
 
 * The latest released version
 * Recent minor versions where feasible
 
-## Scope
+
+
+\## Scope
+
+
 
 This repo contains Terraform infrastructure code (no runtime service). Security issues may include:
 
@@ -46,3 +62,60 @@ This repo contains Terraform infrastructure code (no runtime service). Security 
 * IAM policy overly broad permissions
 
 Supply chain issues in CI tooling
+
+
+
+\## Cryptography
+
+
+
+This project is a Terraform module and does not implement cryptographic algorithms or protocols.
+
+Any encryption in transit (e.g., HTTPS/TLS) is provided by AWS services and/or GitHub, not by this code.
+
+
+
+\## Secure development practices
+
+
+
+This project is a Terraform module that provisions AWS monitoring resources (CloudWatch alarms/dashboards, Contributor Insights, SNS notifications). The maintainers follow secure-by-default design and review practices appropriate for Infrastructure-as-Code.
+
+
+
+\### Secure design approach
+
+\- \*\*Least privilege:\*\* avoid overly broad permissions and prefer narrow scopes/conditions in policies.
+
+\- \*\*No secret handling:\*\* the module should not require or store secrets; do not add secrets to Terraform variables, state, issues, or PRs.
+
+\- \*\*Minimize data exposure:\*\* DNS logs remain in the user’s AWS account; resources created by this module should not expose logs publicly.
+
+\- \*\*Review \& automation:\*\* changes are reviewed via pull requests and validated by CI checks (formatting, validation, policy checks, and security scanning).
+
+
+
+\### Common security risks for IaC modules and mitigations
+
+\- \*\*Overly-permissive IAM or resource policies\*\* (e.g., wide `\*` actions/resources)  
+
+&nbsp; \*Mitigation:\* keep permissions minimal; add/adjust policy checks; review diffs carefully.
+
+\- \*\*Unintended access to logs/metrics\*\* (e.g., log groups readable by broad principals)  
+
+&nbsp; \*Mitigation:\* restrict access to operational roles; avoid granting public or overly broad access.
+
+\- \*\*Misconfiguration drift / breaking changes\*\*  
+
+&nbsp; \*Mitigation:\* keep examples updated; use CI validation/plan checks; document behavior changes clearly.
+
+\- \*\*Supply-chain / CI workflow risk\*\* (e.g., unpinned actions, dependency drift)  
+
+&nbsp; \*Mitigation:\* pin/track dependencies and keep security scanners enabled (IaC scanning, linting, and workflow analysis).
+
+
+
+If you believe a change could impact security (permissions, data exposure, authentication/authorization boundaries), call it out explicitly in the PR description for additional review.
+
+
+

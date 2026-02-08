@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a bug in terraform-aws-dns-monitoring-free
+about: Report a bug in terraform-aws-dns-monitoring-nxdomain
 title: "bug: <short summary>"
 labels: ["bug"]
 assignees: []
