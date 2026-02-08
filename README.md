@@ -350,7 +350,9 @@ See AWS pricing: [https://aws.amazon.com/cloudwatch/pricing/](https://aws.amazon
 - Security issues: see SECURITY.md
 
 Quick links:
-- Issues: https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues
-- New issue (choose template): https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose
-- Contributing: https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/CONTRIBUTING.md
-- Security: https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/SECURITY.md
+
+- [Issues](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues)
+- [New issue (choose template)](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
+- [Contributing](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/CONTRIBUTING.md)
+- [Security](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/SECURITY.md)
+
