@@ -4,8 +4,14 @@ on:
   branch_protection_rule:
   push:
     branches: [ main ]
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["Release (signed + provenance)"]
+    types: [completed]
   schedule:
     - cron: "30 17 * * 6" # Sun 01:30 Asia/Kuala_Lumpur
+  workflow_dispatch:
 
 permissions: read-all
 
@@ -13,6 +19,9 @@ jobs:
   analysis:
     name: Scorecards analysis
     runs-on: ubuntu-latest
+    # If triggered by workflow_run, only run when release workflow succeeded
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+
     permissions:
       security-events: write
       id-token: write
@@ -24,6 +33,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
+          fetch-depth: 0
 
       - name: Run analysis
         uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a
@@ -31,8 +41,7 @@ jobs:
           results_file: results.sarif
           results_format: sarif
           publish_results: true
-          # Optional: enable branch-protection check for public repos by setting a PAT secret.
-          # repo_token: ${{ secrets.SCORECARD_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload results (artifact)
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
