@@ -38,7 +38,7 @@ Minimal example (reference only):
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0"
 
   prefix             = "acme-dev"
   aws_region         = "us-east-1"
@@ -75,7 +75,7 @@ terraform-docs markdown table --output-file modules/README.md --output-mode inje
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.28.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.31.0 |
 
 ## Modules
 
