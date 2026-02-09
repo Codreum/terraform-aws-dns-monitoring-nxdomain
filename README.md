@@ -8,7 +8,7 @@
   </a>
 
   <a href="https://www.bestpractices.dev/projects/11896">
-    <img src="https://www.bestpractices.dev/projects/11896/badge"](https://www.bestpractices.dev/projects/11896/badge") alt="CII Best Practices">
+    <img src="https://www.bestpractices.dev/projects/11896/badge?cachebust=20260209-1" alt="OpenSSF Best Practices">
   </a>
 </p>
 
