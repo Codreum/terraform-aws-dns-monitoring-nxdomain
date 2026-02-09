@@ -75,11 +75,11 @@ Your AWS identity must be able to create/read:
 This repository exposes the Terraform module from the **`modules/`** subdirectory.
 Replace the existing module source `"../../modules"` with the Git source:
 
-- `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0`
+- `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0`
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0"
 }
 ```
 
@@ -269,8 +269,8 @@ Common causes:
 ### 3) Terraform cannot download the module source
 
 - Ensure the source uses `//modules`:
-  - `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0`
-- Ensure the tag exists and matches exactly (e.g., `v0.1.0`)
+  - `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0`
+- Ensure the tag exists and matches exactly (e.g., `v1.0.0`)
 
 Re-run:
 

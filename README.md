@@ -186,7 +186,7 @@ You can enable zone monitoring, VPC monitoring, or both.
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0"
 
   prefix              = "acme-dev"
   aws_region          = "us-east-1"
@@ -334,6 +334,51 @@ See AWS pricing: [https://aws.amazon.com/cloudwatch/pricing/](https://aws.amazon
 - This module does **not** send DNS logs to Codreum.
 - All analysis happens inside your AWS account using CloudWatch Logs / Metrics / Contributor Insights.
 - Alarm notifications are published only to your SNS topic.
+
+## Signed releases & provenance
+
+Every GitHub Release for this project includes **cryptographically signed artifacts** and **SLSA provenance**.
+
+### What’s included in a release
+
+Typical release assets include:
+
+- `terraform-aws-dns-monitoring-nxdomain-<version>.tar.gz` (packaged source)
+- `SHA256SUMS` (checksums)
+- `sbom.spdx.json` (SBOM)
+- `*.sigstore.json` (Sigstore “bundle” signatures for the files above)
+- `multiple.intoto.jsonl` (SLSA provenance)
+
+> Signatures are created using **cosign keyless signing** via GitHub Actions OIDC (no long-lived keys).
+
+### Verify signatures (cosign)
+
+1) Download a release asset and its corresponding `*.sigstore.json` bundle from the GitHub Release assets.
+
+2) Verify the artifact:
+
+```bash
+VERSION=v1.0.0
+cosign verify-blob   --bundle terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz.sigstore.json   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+```
+
+Verify the other assets the same way:
+
+```bash
+cosign verify-blob --bundle SHA256SUMS.sigstore.json SHA256SUMS
+cosign verify-blob --bundle sbom.spdx.json.sigstore.json sbom.spdx.json
+```
+
+### Verify provenance (SLSA)
+
+Each release includes a provenance file (e.g. `multiple.intoto.jsonl`). Verify that the artifact was built from this repository/tag:
+
+```bash
+REPO="github.com/Codreum/terraform-aws-dns-monitoring-nxdomain"
+VERSION=v1.0.0
+
+slsa-verifier verify-artifact   --provenance-path multiple.intoto.jsonl   --source-uri "${REPO}"   --source-tag "${VERSION}"   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+```
 
 ## Limitations (Free)
 
