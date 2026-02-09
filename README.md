@@ -347,7 +347,7 @@ See AWS pricing: [https://aws.amazon.com/cloudwatch/pricing/](https://aws.amazon
   - Bug reports: open an issue using the **Bug report** template
   - Feature requests: open an issue using the **Feature request** template
 - Contributing: see CONTRIBUTING.md (PRs welcome)
-- Security issues: see SECURITY.md
+- Security issues: sees SECURITY.md
 
 Quick links:
 
