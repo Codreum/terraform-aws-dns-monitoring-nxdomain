@@ -8,7 +8,7 @@
   </a>
 
   <a href="https://www.bestpractices.dev/projects/11896">
-    <img src="https://www.bestpractices.dev/projects/11896/badge?cachebust=20260209" alt="OpenSSF Best Practices">
+    <img src="https://www.bestpractices.dev/projects/11896/badge"](https://www.bestpractices.dev/projects/11896/badge") alt="CII Best Practices">
   </a>
 </p>
 
@@ -347,7 +347,7 @@ See AWS pricing: [https://aws.amazon.com/cloudwatch/pricing/](https://aws.amazon
   - Bug reports: open an issue using the **Bug report** template
   - Feature requests: open an issue using the **Feature request** template
 - Contributing: see CONTRIBUTING.md (PRs welcome)
-- Security issues: sees SECURITY.md
+- Security issues: see SECURITY.md
 
 Quick links:
 
