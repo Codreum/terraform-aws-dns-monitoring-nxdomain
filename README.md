@@ -7,8 +7,8 @@
     <img src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"](https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge") alt="OpenSSF Scorecard">
   </a>
 
-  <a href="https://bestpractices.coreinfrastructure.org/projects/11896">
-    <img src="https://bestpractices.coreinfrastructure.org/projects/11896/badge"](https://bestpractices.coreinfrastructure.org/projects/11896/badge") alt="CII Best Practices">
+  <a href="https://www.bestpractices.dev/projects/11896">
+    <img src="https://www.bestpractices.dev/projects/11896/badge?cachebust=20260209" alt="OpenSSF Best Practices">
   </a>
 </p>
 
