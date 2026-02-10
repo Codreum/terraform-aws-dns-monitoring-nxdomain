@@ -147,7 +147,7 @@ This module:
 
 ## Prerequisites
 
-1. Terraform >= 1.14
+1. Terraform >= 1.12
 1. AWS provider >= 6.2
 1. A CloudWatch Logs group already receiving DNS logs:
    - **Zone mode:** Route 53 hosted zone query logs (CLF-like fields include `hosted_zone_id`, `rcode`, `qname`, etc.)

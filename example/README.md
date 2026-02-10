@@ -26,7 +26,7 @@ Each folder includes:
 
 ### 1) Terraform
 
-Recommended: **Terraform `>= 1.14.0`**
+Recommended: **Terraform `>= 1.12.0`**
 (If an example folder declares a higher `required_version`, follow that requirement.)
 
 ### 2) AWS credentials

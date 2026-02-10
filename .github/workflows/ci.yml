@@ -62,7 +62,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
-          terraform_version: "1.14.0"
+          terraform_version: "1.12.0"
           terraform_wrapper: false
 
       - name: Terraform fmt check
@@ -80,7 +80,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
-          terraform_version: "1.14.0"
+          terraform_version: "1.12.0"
           terraform_wrapper: false
 
       - name: Terraform init (no backend)
@@ -111,7 +111,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
-          terraform_version: "1.14.0"
+          terraform_version: "1.12.0"
           terraform_wrapper: false
 
       - name: Terraform init (no backend)
@@ -170,7 +170,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
-          terraform_version: "1.14.0"
+          terraform_version: "1.12.0"
           terraform_wrapper: false
 
       - name: Terraform init (no backend)
@@ -451,7 +451,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd
         with:
-          terraform_version: "1.14.0"
+          terraform_version: "1.12.0"
           terraform_wrapper: false
 
       - name: Terraform init (no backend)

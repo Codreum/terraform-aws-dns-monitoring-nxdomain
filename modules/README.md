@@ -13,7 +13,7 @@ It assumes DNS query logs are **already flowing into CloudWatch Logs** (it does 
 
 ## Prerequisites
 
-1. Terraform >= 1.14
+1. Terraform >= 1.12
 2. AWS provider >= 6.2
 3. A CloudWatch Logs group already receiving DNS logs:
    - **Zone mode:** Route 53 hosted zone query logs (CLF-like fields include `hosted_zone_id`, `rcode`, `qname`, etc.)
@@ -75,7 +75,7 @@ terraform-docs markdown table --output-file modules/README.md --output-mode inje
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.31.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.2.0 |
 
 ## Modules
 
