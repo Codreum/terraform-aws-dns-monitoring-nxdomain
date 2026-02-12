@@ -7,11 +7,11 @@ Each example is a complete Terraform configuration that calls the module and out
 
 ## Examples
 
-| Example | What it enables | Folder |
-|--------|------------------|--------|
+| Example             | What it enables                                                  | Folder                   |
+| ------------------- | ---------------------------------------------------------------- | ------------------------ |
 | **Both Zone + VPC** | Route 53 Hosted Zone NXDOMAIN + VPC/Resolver NXDOMAIN monitoring | `examples/both-zone-vpc` |
-| **Zone only** | Route 53 Hosted Zone NXDOMAIN monitoring | `examples/zone-only` |
-| **VPC only** | VPC/Resolver NXDOMAIN monitoring | `examples/vpc-only` |
+| **Zone only**       | Route 53 Hosted Zone NXDOMAIN monitoring                         | `examples/zone-only`     |
+| **VPC only**        | VPC/Resolver NXDOMAIN monitoring                                 | `examples/vpc-only`      |
 
 Each folder includes:
 
