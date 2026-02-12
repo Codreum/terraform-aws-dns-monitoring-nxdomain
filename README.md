@@ -114,7 +114,7 @@ This module uses **your real DNS query logs** inside AWS:
 1. Log group management (Pro)
 
 | Capability | NXDOMAIN | Pro |
-|---|:---:|:---:|
+| --- | :---: | :---: |
 | NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
 | NXDOMAIN dashboards (Zone/VPC baseline) | ✅ | ✅ |
