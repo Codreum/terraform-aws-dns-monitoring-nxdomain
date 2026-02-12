@@ -62,7 +62,7 @@ terraform-docs markdown table --output-file modules/README.md --output-mode inje
 ```
 
 > Do not edit the auto-generated section by hand. Update `variable.tf` / `output.tf` instead.
-
+<!-- markdownlint-disable MD060 -->
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -146,3 +146,4 @@ No modules.
 | <a name="output_enabled"></a> [enabled](#output\_enabled) | Which modes are enabled in this deployment. |
 | <a name="output_metrics"></a> [metrics](#output\_metrics) | Custom metric namespace and metric names created by this module. |
 <!-- END_TF_DOCS -->
+<!-- markdownlint-disable MD060 -->
