@@ -400,3 +400,4 @@ Quick links:
 - [New issue (choose template)](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
 - [Contributing](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/CONTRIBUTING.md)
 - [Security](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/SECURITY.md)
+- [Documentation](https://www.codreum.com/docs.html)
