@@ -131,6 +131,7 @@ module "codreum_autovpc" {
   source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 }
 ```
+
 ---
 
 ## Quick start
@@ -153,12 +154,14 @@ cd example/autovpc-2az
 At minimum, update the placeholder values in the selected example.
 
 For NXDOMAIN examples, that usually means:
+
 - `aws_region`
 - `NX_log_group_name`
 - `dns_alert_sns_arn`
 - `NX_zone_id` and/or `NX_vpc_id`
 
 For AutoVPC examples, that usually means:
+
 - `aws_region`
 - `prefix`
 - `free_vpc_config`
@@ -346,6 +349,7 @@ Common causes:
 ### 3) AutoVPC validation fails
 
 Common causes:
+
 - invalid `subnet_count`
 - invalid `az_count`
 - `subnet_count < az_count`

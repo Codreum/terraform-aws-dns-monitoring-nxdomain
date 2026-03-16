@@ -61,9 +61,9 @@ locals {
         # - else -> only first subnet in each AZ gets IGW default route
         is_igw_subnet = (
           vpc.az_count == vpc.subnet_count ? true : (
-              vpc.subnets_per_az > 0 &&
-              (subnet_index % vpc.subnets_per_az == 0)
-            )
+            vpc.subnets_per_az > 0 &&
+            (subnet_index % vpc.subnets_per_az == 0)
+          )
         )
       }
     ]
