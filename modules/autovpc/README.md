@@ -120,49 +120,49 @@ This module uses a **constrained free model**:
 ✅ Included:
 
 1. 1 VPC per deployment
-1. Internet Gateway
-1. subnet creation from a base CIDR
-1. route table creation per subnet
-1. route table associations
-1. basic output map for VPC IDs and subnet plan
-1. validation for supported subnet and AZ combinations
-1. optional Route 53 Resolver query logging association for the created VPC
+2. Internet Gateway
+3. subnet creation from a base CIDR
+4. route table creation per subnet
+5. route table associations
+6. basic output map for VPC IDs and subnet plan
+7. validation for supported subnet and AZ combinations
+8. optional Route 53 Resolver query logging association for the created VPC
 
 🚫 Not included (Free):
 
 1. CloudWatch Logs log group creation for DNS logs
-1. NAT gateway support
-1. dual-stack / IPv6 controls
-1. VPC flow logs
-1. gateway or interface endpoints
-1. DNS firewall integration
-1. Internet Monitor integration
-1. VPC / subnet metric alarms
-1. license validation / enforcement
-1. premium support / SLA
-1. multi-VPC free deployment
+2. NAT gateway support
+3. dual-stack / IPv6 controls
+4. VPC flow logs
+5. gateway or interface endpoints
+6. DNS firewall integration
+7. Internet Monitor integration
+8. VPC / subnet metric alarms
+9. license validation / enforcement
+10. premium support / SLA
+11. multi-VPC free deployment
 
-| Capability | Free | Pro |
-| --- | :---: | :---: |
-| Single VPC deployment | ✅ | ✅ |
-| Supported AZ count | 1 or 2 only | 1, 2, or 4 |
-| Supported subnet_count | 1, 2, or 4 only | 1 to 64 (power-of-2 options) |
-| Optional Resolver query logging enablement | ✅ | ✅ |
-| CloudWatch Logs log group creation for DNS logs | ❌ manual ARN required | Depends on Pro packaging |
-| NAT support | ❌ | ✅ |
-| Basic subnet auto-splitting | ✅ | ✅ |
-| Basic route table setup | ✅ | ✅ |
-| Internet Gateway wiring | ✅ | ✅ |
-| IPv6 / dual-stack controls | ❌ | ✅ |
-| Flow logs | ❌ | ✅ |
-| Gateway endpoints | ❌ | ✅ |
-| Interface endpoints | ❌ | ✅ |
-| DNS firewall integration | ❌ | ✅ |
-| Internet Monitor integration | ❌ | ✅ |
-| VPC / subnet metric alarms | ❌ | ✅ |
-| License validation / enforcement | ❌ | ✅ |
-| License watcher + alerts | ❌ | ✅ |
-| Support / SLA | ❌ | ✅ |
+| Capability                                      | Free                  | Pro                          |
+| ----------------------------------------------- | :-------------------: | :--------------------------: |
+| Single VPC deployment                           | ✅                     | ✅                            |
+| Supported AZ count                              | 1 or 2 only           | 1, 2, or 4                   |
+| Supported subnet_count                          | 1, 2, or 4 only       | 1 to 64 (power-of-2 options) |
+| Optional Resolver query logging enablement      | ✅                     | ✅                            |
+| CloudWatch Logs log group creation for DNS logs | ❌ manual ARN required | Depends on Pro packaging     |
+| NAT support                                     | ❌                     | ✅                            |
+| Basic subnet auto-splitting                     | ✅                     | ✅                            |
+| Basic route table setup                         | ✅                     | ✅                            |
+| Internet Gateway wiring                         | ✅                     | ✅                            |
+| IPv6 / dual-stack controls                      | ❌                     | ✅                            |
+| Flow logs                                       | ❌                     | ✅                            |
+| Gateway endpoints                               | ❌                     | ✅                            |
+| Interface endpoints                             | ❌                     | ✅                            |
+| DNS firewall integration                        | ❌                     | ✅                            |
+| Internet Monitor integration                    | ❌                     | ✅                            |
+| VPC / subnet metric alarms                      | ❌                     | ✅                            |
+| License validation / enforcement                | ❌                     | ✅                            |
+| License watcher + alerts                        | ❌                     | ✅                            |
+| Support / SLA                                   | ❌                     | ✅                            |
 
 ---
 
@@ -171,17 +171,17 @@ This module uses a **constrained free model**:
 This module:
 
 1. reads your requested VPC base CIDR and mask from `free_vpc_config`
-1. validates the supported free-edition combinations
-1. creates:
+2. validates the supported free-edition combinations
+3. creates:
    - VPC
    - Internet Gateway
    - subnets
    - route tables
    - route table associations
-1. optionally creates:
+4. optionally creates:
    - Route 53 Resolver query log config
    - Route 53 Resolver query log config association to the created VPC
-1. exports:
+5. exports:
    - `vpc_ids`
    - `subnet_plan`
    - `resolver_query_log_config_id`
@@ -192,10 +192,10 @@ This module:
 ## Prerequisites
 
 1. Terraform >= 1.12
-1. AWS provider compatible with your deployment
-1. a target AWS region
-1. a valid `free_vpc_config` input
-1. if enabling Resolver query logging:
+2. AWS provider compatible with your deployment
+3. a target AWS region
+4. a valid `free_vpc_config` input
+5. if enabling Resolver query logging:
    - an existing CloudWatch Logs log group ARN to use as the destination
 
 ---
@@ -297,7 +297,7 @@ module "codreum_autovpc" {
     }
   }
 
-  enable_resolver_query_logging   = true
+  enable_resolver_query_logging      = true
   resolver_query_log_destination_arn = "arn:aws:logs:ap-southeast-1:123456789012:log-group:/aws/route53/resolver-query-logs"
 
   tags = {
@@ -328,7 +328,7 @@ module "codreum_autovpc" {
     }
   }
 
-  enable_resolver_query_logging   = true
+  enable_resolver_query_logging      = true
   resolver_query_log_destination_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/resolver-query-logs"
 }
 
@@ -364,7 +364,7 @@ output "autovpc_resolver_query_log_config_arn" {
 }
 ```
 
-1. Deploy:
+2. Deploy:
 
 ```bash
 terraform init
@@ -416,17 +416,17 @@ Codreum Pro adds richer VPC capabilities.
 The Pro package currently includes:
 
 1. license validation
-1. a license watcher Lambda
-1. SNS notifications and DynamoDB-backed license state
-1. a Pro `autovpc` module
-1. NAT support
-1. broader subnet and AZ options
-1. IPv6 / dual-stack controls
-1. VPC flow logs
-1. gateway and interface endpoints
-1. DNS firewall options
-1. Internet Monitor options
-1. VPC and subnet metric alarms
+2. a license watcher Lambda
+3. SNS notifications and DynamoDB-backed license state
+4. a Pro `autovpc` module
+5. NAT support
+6. broader subnet and AZ options
+7. IPv6 / dual-stack controls
+8. VPC flow logs
+9. gateway and interface endpoints
+10. DNS firewall options
+11. Internet Monitor options
+12. VPC and subnet metric alarms
 
 Planned packaging:
 
