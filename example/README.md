@@ -10,15 +10,15 @@ modules and outputs the key artifacts created by that example.
 
 ## Examples
 
-| Example                      | What it enables                                                                 | Folder                         |
-| ---------------------------- | ------------------------------------------------------------------------------- | ------------------------------ |
-| **Both Zone + VPC**          | Route 53 Hosted Zone NXDOMAIN + VPC/Resolver NXDOMAIN monitoring                | `example/both-zone-vpc`        |
-| **Zone only**                | Route 53 Hosted Zone NXDOMAIN monitoring                                        | `example/zone-only`            |
-| **VPC only**                 | VPC/Resolver NXDOMAIN monitoring                                                | `example/vpc-only`             |
-| **AutoVPC 1 AZ**             | Free AutoVPC deployment with 1 subnet in 1 AZ                                   | `example/autovpc-1az`          |
-| **AutoVPC 2 AZ**             | Free AutoVPC deployment with 2 subnets across 2 AZs                             | `example/autovpc-2az`          |
-| **AutoVPC 4 subnets / 2 AZ** | Free AutoVPC deployment with 4 subnets across 2 AZs                             | `example/autovpc-4subnets-2az` |
-| **AutoVPC + DNS VPC**        | Creates a free AutoVPC VPC and enables NXDOMAIN VPC monitoring against that VPC | `example/autovpc-with-dns-vpc` |
+| Example | What it enables | Folder |
+| --- | --- | --- |
+| **Both Zone + VPC** | Route 53 Hosted Zone NXDOMAIN + VPC/Resolver NXDOMAIN monitoring | `example/both-zone-vpc` |
+| **Zone only** | Route 53 Hosted Zone NXDOMAIN monitoring | `example/zone-only` |
+| **VPC only** | VPC/Resolver NXDOMAIN monitoring | `example/vpc-only` |
+| **AutoVPC 1 AZ** | Free AutoVPC deployment with 1 subnet in 1 AZ | `example/autovpc-1az` |
+| **AutoVPC 2 AZ** | Free AutoVPC deployment with 2 subnets across 2 AZs | `example/autovpc-2az` |
+| **AutoVPC 4 subnets / 2 AZ** | Free AutoVPC deployment with 4 subnets across 2 AZs | `example/autovpc-4subnets-2az` |
+| **AutoVPC + DNS VPC** | Creates a free AutoVPC VPC and enables NXDOMAIN VPC monitoring against that VPC | `example/autovpc-with-dns-vpc` |
 
 Each folder includes:
 
@@ -131,7 +131,6 @@ module "codreum_autovpc" {
   source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 }
 ```
-
 ---
 
 ## Quick start
@@ -154,14 +153,12 @@ cd example/autovpc-2az
 At minimum, update the placeholder values in the selected example.
 
 For NXDOMAIN examples, that usually means:
-
 - `aws_region`
 - `NX_log_group_name`
 - `dns_alert_sns_arn`
 - `NX_zone_id` and/or `NX_vpc_id`
 
 For AutoVPC examples, that usually means:
-
 - `aws_region`
 - `prefix`
 - `free_vpc_config`
@@ -200,7 +197,7 @@ Example override block:
   # NX_vpc_anomaly_eval_periods         =
 ```
 
-Default values (if you do not override):
+Default values (if you don’t override):
 
 - Zone
   - `NX_zone_nxdomain_threshold` = `100`
@@ -289,7 +286,7 @@ Depending on the selected example, you may get one or both of the following:
 
 Yes — AutoVPC and NXDOMAIN can be used together in the same Terraform root.
 
-The combined example (`autovpc-with-dns-vpc`) wires the created VPC into the
+The combined example (autovpc-with-dns-vpc) wires the created VPC into the
 NXDOMAIN module like this:
 
 ```hcl
@@ -305,13 +302,26 @@ to the destination ARN you provide.
 
 ## Folder conventions
 
-- `both-zone-vpc` — sets both `NX_zone_id` and `NX_vpc_id`
-- `zone-only` — sets only `NX_zone_id`
-- `vpc-only` — sets only `NX_vpc_id`
-- `autovpc-1az` — creates 1 subnet in 1 AZ
-- `autovpc-2az` — creates 2 subnets across 2 AZs
-- `autovpc-4subnets-2az` — creates 4 subnets across 2 AZs
-- `autovpc-with-dns-vpc` — creates a VPC using AutoVPC and passes the VPC ID into the NXDOMAIN module
+- `both-zone-vpc`
+  Sets both `NX_zone_id` and `NX_vpc_id`
+
+- `zone-only`
+  Sets only `NX_zone_id`
+
+- `vpc-only`
+  Sets only `NX_vpc_id`
+
+- `autovpc-1az`
+  Creates 1 subnet in 1 AZ
+
+- `autovpc-2az`
+  Creates 2 subnets across 2 AZs
+
+- `autovpc-4subnets-2az`
+  Creates 4 subnets across 2 AZs
+
+- `autovpc-with-dns-vpc`
+  Creates a VPC using AutoVPC and passes the VPC ID into the NXDOMAIN module
 
 ---
 
@@ -336,7 +346,6 @@ Common causes:
 ### 3) AutoVPC validation fails
 
 Common causes:
-
 - invalid `subnet_count`
 - invalid `az_count`
 - `subnet_count < az_count`

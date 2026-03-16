@@ -116,40 +116,40 @@ This module uses **your real DNS query logs** inside AWS:
 ✅ Included:
 
 1. NXDOMAIN **count** alarm (Zone + VPC)
-2. NXDOMAIN **rate (%)** alarm (Zone + VPC)
-3. NXDOMAIN **anomaly detection** alarms (count + rate)
-4. CloudWatch dashboards:
+1. NXDOMAIN **rate (%)** alarm (Zone + VPC)
+1. NXDOMAIN **anomaly detection** alarms (count + rate)
+1. CloudWatch dashboards:
    - Zone dashboard
    - VPC dashboard
    - Ops landing dashboard
-5. Top-N triage views:
+1. Top-N triage views:
    - Zone: Top NXDOMAIN by domain / qtype / edge / source
    - VPC: Top NXDOMAIN by qname / source
-6. SNS integration: alarms publish to your provided SNS topic
+1. SNS integration: alarms publish to your provided SNS topic
    (`dns_alert_sns_arn`)
 
 🚫 Not included (Free):
 
 1. Additional DNS error metrics (SERVFAIL / REFUSED / etc.)
-2. Expanded Contributor Insights packs and dashboards beyond NXDOMAIN
-3. Licensing, enforcement, premium support / SLA (Pro)
-4. Log group management (Pro)
+1. Expanded Contributor Insights packs and dashboards beyond NXDOMAIN
+1. Licensing, enforcement, premium support / SLA (Pro)
+1. Log group management (Pro)
 
-| Capability                                            | NXDOMAIN | Pro |
-| ----------------------------------------------------- | :------: | :-: |
-| NXDOMAIN static alarms + anomaly detection            | ✅        | ✅   |
-| NXDOMAIN Contributor Insights (Top-N rules)           | ✅        | ✅   |
-| NXDOMAIN dashboards (Zone / VPC baseline)             | ✅        | ✅   |
-| Additional DNS metrics + Contributor Insights packs   | ❌        | ✅   |
-| Per-zone metrics / alarm / CI toggle                  | ❌        | ✅   |
-| Per-zone metric dashboards beyond NXDOMAIN            | ❌        | ✅   |
-| Per-zone Top-N dashboards (expanded)                  | ❌        | ✅   |
-| Built-in SNS wiring presets (Email / Slack / SMS)     | ❌        | ✅   |
-| Log group management                                  | ❌        | ✅   |
-| Multiple zone / VPC IDs in one deployment             | ❌        | ✅   |
-| Advanced dashboards (Ops / Investigation / Forensics) | ❌        | ✅   |
-| Licensing & enforcement                               | ❌        | ✅   |
-| Support / SLA                                         | ❌        | ✅   |
+| Capability | NXDOMAIN | Pro |
+| --- | :---: | :---: |
+| NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
+| NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
+| NXDOMAIN dashboards (Zone / VPC baseline) | ✅ | ✅ |
+| Additional DNS metrics + Contributor Insights packs | ❌ | ✅ |
+| Per-zone metrics / alarm / CI toggle | ❌ | ✅ |
+| Per-zone metric dashboards beyond NXDOMAIN | ❌ | ✅ |
+| Per-zone Top-N dashboards (expanded) | ❌ | ✅ |
+| Built-in SNS wiring presets (Email / Slack / SMS) | ❌ | ✅ |
+| Log group management | ❌ | ✅ |
+| Multiple zone / VPC IDs in one deployment | ❌ | ✅ |
+| Advanced dashboards (Ops / Investigation / Forensics) | ❌ | ✅ |
+| Licensing & enforcement | ❌ | ✅ |
+| Support / SLA | ❌ | ✅ |
 
 ---
 
@@ -159,23 +159,23 @@ This module:
 
 1. reads from an existing CloudWatch Logs group containing DNS logs
    (`NX_log_group_name`)
-2. creates:
+1. creates:
    - log metric filters → custom metrics in `Codreum/DNSCI`
    - CloudWatch alarms (static + rate % + anomaly)
    - Contributor Insights rules + Logs Insights widgets (Top-N triage)
    - dashboards (zone, vpc, ops landing)
-3. sends alarm notifications to your SNS topic (`dns_alert_sns_arn`)
+1. sends alarm notifications to your SNS topic (`dns_alert_sns_arn`)
 
 ---
 
 ## Prerequisites
 
 1. Terraform >= 1.12
-2. AWS provider >= 6.2
-3. A CloudWatch Logs group already receiving DNS logs:
+1. AWS provider >= 6.2
+1. A CloudWatch Logs group already receiving DNS logs:
    - **Zone mode:** Route 53 hosted zone query logs
    - **VPC mode:** JSON resolver query logs
-4. Region constraints (AWS limitation):
+1. Region constraints (AWS limitation):
    - **Zone mode (`NX_zone_id`)**: Route 53 public hosted zone query logging
      requires the CloudWatch Logs log group in **`us-east-1`**.
    - **VPC mode (`NX_vpc_id`)**: Resolver query logging is **regional** and
@@ -217,7 +217,7 @@ This module can operate in either or both modes:
 1. Ensure DNS query logs are flowing into CloudWatch Logs:
    - Hosted zone query logs (CLF-like)
    - Resolver query logs (JSON)
-2. Copy and paste into your `main.tf`:
+1. Copy and paste into your `main.tf`:
 
 ```hcl
 module "codreum_dns_NX" {
@@ -244,7 +244,7 @@ edits:
 - change `aws_region` to the VPC region if you are using VPC mode
 - if using Zone mode, make sure `aws_region = "us-east-1"`
 
-3. Optional: this module exports dashboard URLs, alarm ARNs, and metric names
+1. Optional: this module exports dashboard URLs, alarm ARNs, and metric names
    via Terraform outputs. Add this to your own `outputs.tf` if you want:
 
 ```hcl
@@ -269,7 +269,7 @@ output "dns_NX_ci_rules" {
 }
 ```
 
-4. Deploy:
+1. Deploy:
 
 ```bash
 terraform init
@@ -300,12 +300,14 @@ You will get an Ops landing page plus dashboards for the modes you enabled:
 
 ![Dashboards](../../screenshot/dashboard2.jpg)
 
-#### How to use the dashboards
+#### How to use
 
 - If alarms fire, start at **Ops landing**, then jump into the Zone or VPC
   dashboard.
 - Use **Top-N** tables to identify the top failing domains, qtype, edge, and
   source IPs.
+
+---
 
 ### 2) Alarms (Count / Rate / Anomaly)
 
@@ -323,11 +325,13 @@ Alarms publish to your SNS topic (`dns_alert_sns_arn`).
 
 ![Alarms](../../screenshot/email_alert.jpg)
 
-#### How to use the alarms
+#### What to check
 
 - **Count alarm**: sudden volume spike
 - **Rate alarm**: NXDOMAIN becomes a larger share of total queries
 - **Anomaly alarms**: unexpected behavior even if below static thresholds
+
+---
 
 ### 3) Contributor Insights (Top-N triage)
 
@@ -340,7 +344,7 @@ Contributor Insights rules are used for fast Top-N analysis:
 
 ![Contributor Insights](../../screenshot/CI2.jpg)
 
-#### How to use Contributor Insights
+#### How to use
 
 - Open **CloudWatch → Contributor Insights**
 - Filter by your `prefix`
@@ -353,11 +357,11 @@ Contributor Insights rules are used for fast Top-N analysis:
 Codreum Pro adds:
 
 1. more DNS metrics (SERVFAIL / REFUSED / overall error / success rate)
-2. more pre-built metric alarms and Contributor Insights packs
-3. richer dashboards with more investigation widgets
-4. subscription management and support options
-5. multi-zone / multi-VPC support
-6. optional prebuilt alerting integrations via SNS setup
+1. more pre-built metric alarms and Contributor Insights packs
+1. richer dashboards with more investigation widgets
+1. subscription management and support options
+1. multi-zone / multi-VPC support
+1. optional prebuilt alerting integrations via SNS setup
 
 Learn more:
 [https://www.codreum.com/products.html#zone](https://www.codreum.com/products.html#zone)
@@ -407,12 +411,14 @@ Typical release assets include:
 ### Verify signatures (cosign)
 
 1. Download a release asset and its corresponding `*.sigstore.json` bundle.
-2. Verify the artifact:
+1. Verify the artifact:
 
 ```bash
 VERSION=v1.1.0
 
-cosign verify-blob   --bundle terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz.sigstore.json   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+cosign verify-blob \
+  --bundle terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz.sigstore.json \
+  terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
 ```
 
 Verify the other assets the same way:
@@ -430,7 +436,11 @@ Verify that the artifact was built from this repository and tag:
 REPO="github.com/Codreum/terraform-aws-dns-monitoring-nxdomain"
 VERSION=v1.1.0
 
-slsa-verifier verify-artifact   --provenance-path multiple.intoto.jsonl   --source-uri "${REPO}"   --source-tag "${VERSION}"   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+slsa-verifier verify-artifact \
+  --provenance-path multiple.intoto.jsonl \
+  --source-uri "${REPO}" \
+  --source-tag "${VERSION}" \
+  terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
 ```
 
 ---
@@ -461,6 +471,7 @@ Quick links:
 
 ## Terraform inputs and outputs
 
+<!-- markdownlint-disable -->
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -544,3 +555,4 @@ No modules.
 | <a name="output_enabled"></a> [enabled](#output\_enabled) | Which modes are enabled in this deployment. |
 | <a name="output_metrics"></a> [metrics](#output\_metrics) | Custom metric namespace and metric names created by this module. |
 <!-- END_TF_DOCS -->
+<!-- markdownlint-restore -->
