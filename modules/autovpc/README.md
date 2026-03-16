@@ -194,7 +194,7 @@ This module uses a **constrained free model**:
 
 This module:
 
-1. reads your requested VPC base CIDR and mask from `free\_vpc\_config`
+1. reads your requested VPC base CIDR and mask from `free\\\_vpc\\\_config`
 2. validates the supported free-edition combinations
 3. creates:
 
@@ -209,10 +209,10 @@ This module:
    * Route 53 Resolver query log config association to the created VPC
 5. exports:
 
-   * `vpc\_ids`
-   * `subnet\_plan`
-   * `resolver\_query\_log\_config\_id`
-   * `resolver\_query\_log\_config\_arn`
+   * `vpc\\\_ids`
+   * `subnet\\\_plan`
+   * `resolver\\\_query\\\_log\\\_config\\\_id`
+   * `resolver\\\_query\\\_log\\\_config\\\_arn`
 
 \---
 
@@ -221,7 +221,7 @@ This module:
 1. Terraform >= 1.12
 2. AWS provider compatible with your deployment
 3. a target AWS region
-4. a valid `free\_vpc\_config` input
+4. a valid `free\\\_vpc\\\_config` input
 5. if enabling Resolver query logging:
 
    * an existing CloudWatch Logs log group ARN to use as the destination
@@ -233,29 +233,29 @@ This module:
 Required:
 
 * `prefix`
-* `aws\_region`
-* `free\_vpc\_config`
+* `aws\\\_region`
+* `free\\\_vpc\\\_config`
 
 Optional:
 
 * `tags`
-* `enable\_resolver\_query\_logging`
-* `resolver\_query\_log\_destination\_arn`
-* `resolver\_query\_log\_config\_name`
+* `enable\\\_resolver\\\_query\\\_logging`
+* `resolver\\\_query\\\_log\\\_destination\\\_arn`
+* `resolver\\\_query\\\_log\\\_config\\\_name`
 
 Free-edition rules:
 
 * supports a maximum of **1 VPC**
-* `subnet\_count` must be **1**, **2**, or **4**
-* `az\_count` must be **1** or **2**
-* `subnet\_count` must be **greater than or equal to** `az\_count`
-* `subnet\_count` must be **divisible by** `az\_count`
+* `subnet\\\_count` must be **1**, **2**, or **4**
+* `az\\\_count` must be **1** or **2**
+* `subnet\\\_count` must be **greater than or equal to** `az\\\_count`
+* `subnet\\\_count` must be **divisible by** `az\\\_count`
 * the resulting subnet mask must not exceed **/28**
 
 Resolver query logging rules:
 
-* set `enable\_resolver\_query\_logging = true` to enable it
-* when enabled, `resolver\_query\_log\_destination\_arn` must be provided
+* set `enable\\\_resolver\\\_query\\\_logging = true` to enable it
+* when enabled, `resolver\\\_query\\\_log\\\_destination\\\_arn` must be provided
 * this module does **not** create the CloudWatch Logs log group for you
 * the destination log group must already exist
 
@@ -267,16 +267,16 @@ This module is intentionally simple and uses one free deployment model.
 
 Operationally, you can use it in either of these shapes:
 
-* **single-AZ layout**: `az\_count = 1`
-* **two-AZ layout**: `az\_count = 2`
+* **single-AZ layout**: `az\\\_count = 1`
+* **two-AZ layout**: `az\\\_count = 2`
 
 Common valid combinations include:
 
-* `subnet\_count = 1`, `az\_count = 1`
-* `subnet\_count = 2`, `az\_count = 1`
-* `subnet\_count = 2`, `az\_count = 2`
-* `subnet\_count = 4`, `az\_count = 1`
-* `subnet\_count = 4`, `az\_count = 2`
+* `subnet\\\_count = 1`, `az\\\_count = 1`
+* `subnet\\\_count = 2`, `az\\\_count = 1`
+* `subnet\\\_count = 2`, `az\\\_count = 2`
+* `subnet\\\_count = 4`, `az\\\_count = 1`
+* `subnet\\\_count = 4`, `az\\\_count = 2`
 
 \---
 
@@ -285,18 +285,18 @@ Common valid combinations include:
 ### Basic AutoVPC deployment
 
 ```hcl
-module "codreum\_autovpc" {
+module "codreum\\\_autovpc" {
   source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 
   prefix     = "acme-dev-"
-  aws\_region = "ap-southeast-1"
+  aws\\\_region = "ap-southeast-1"
 
-  free\_vpc\_config = {
+  free\\\_vpc\\\_config = {
     main = {
-      vpc\_base     = "10.10.0.0"
-      vpc\_mask     = 24
-      subnet\_count = 2
-      az\_count     = 2
+      vpc\\\_base     = "10.10.0.0"
+      vpc\\\_mask     = 24
+      subnet\\\_count = 2
+      az\\\_count     = 2
     }
   }
 
@@ -310,23 +310,23 @@ module "codreum\_autovpc" {
 ### AutoVPC with Resolver query logging enabled
 
 ```hcl
-module "codreum\_autovpc" {
+module "codreum\\\_autovpc" {
   source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 
   prefix     = "acme-dev-"
-  aws\_region = "ap-southeast-1"
+  aws\\\_region = "ap-southeast-1"
 
-  free\_vpc\_config = {
+  free\\\_vpc\\\_config = {
     main = {
-      vpc\_base     = "10.10.0.0"
-      vpc\_mask     = 24
-      subnet\_count = 2
-      az\_count     = 2
+      vpc\\\_base     = "10.10.0.0"
+      vpc\\\_mask     = 24
+      subnet\\\_count = 2
+      az\\\_count     = 2
     }
   }
 
-  enable\_resolver\_query\_logging      = true
-  resolver\_query\_log\_destination\_arn = "arn:aws:logs:ap-southeast-1:123456789012:log-group:/aws/route53/resolver-query-logs"
+  enable\\\_resolver\\\_query\\\_logging      = true
+  resolver\\\_query\\\_log\\\_destination\\\_arn = "arn:aws:logs:ap-southeast-1:123456789012:log-group:/aws/route53/resolver-query-logs"
 
   tags = {
     Environment = "dev"
@@ -341,54 +341,54 @@ This is the recommended pattern when you want both modules in the same root
 configuration:
 
 ```hcl
-module "codreum\_autovpc" {
+module "codreum\\\_autovpc" {
   source = "../../modules/autovpc"
 
   prefix     = "acme-dev-"
-  aws\_region = "us-east-1"
+  aws\\\_region = "us-east-1"
 
-  free\_vpc\_config = {
+  free\\\_vpc\\\_config = {
     main = {
-      vpc\_base     = "10.40.0.0"
-      vpc\_mask     = 24
-      subnet\_count = 2
-      az\_count     = 2
+      vpc\\\_base     = "10.40.0.0"
+      vpc\\\_mask     = 24
+      subnet\\\_count = 2
+      az\\\_count     = 2
     }
   }
 
-  enable\_resolver\_query\_logging      = true
-  resolver\_query\_log\_destination\_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/resolver-query-logs"
+  enable\\\_resolver\\\_query\\\_logging      = true
+  resolver\\\_query\\\_log\\\_destination\\\_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/resolver-query-logs"
 }
 
-module "codreum\_dns\_NX" {
+module "codreum\\\_dns\\\_NX" {
   source = "../../modules/nxdomain"
 
   prefix            = "acme-dev"
-  aws\_region        = "us-east-1"
-  NX\_log\_group\_name = "/aws/route53/resolver-query-logs"
-  dns\_alert\_sns\_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
+  aws\\\_region        = "us-east-1"
+  NX\\\_log\\\_group\\\_name = "/aws/route53/resolver-query-logs"
+  dns\\\_alert\\\_sns\\\_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
 
-  NX\_vpc\_id = module.codreum\_autovpc.vpc\_ids\["main"]
+  NX\\\_vpc\\\_id = module.codreum\\\_autovpc.vpc\\\_ids\\\["main"]
 }
 ```
 
 1. Optional: export the module outputs in your own `outputs.tf`:
 
 ```hcl
-output "autovpc\_vpc\_ids" {
-  value = module.codreum\_autovpc.vpc\_ids
+output "autovpc\\\_vpc\\\_ids" {
+  value = module.codreum\\\_autovpc.vpc\\\_ids
 }
 
-output "autovpc\_subnet\_plan" {
-  value = module.codreum\_autovpc.subnet\_plan
+output "autovpc\\\_subnet\\\_plan" {
+  value = module.codreum\\\_autovpc.subnet\\\_plan
 }
 
-output "autovpc\_resolver\_query\_log\_config\_id" {
-  value = module.codreum\_autovpc.resolver\_query\_log\_config\_id
+output "autovpc\\\_resolver\\\_query\\\_log\\\_config\\\_id" {
+  value = module.codreum\\\_autovpc.resolver\\\_query\\\_log\\\_config\\\_id
 }
 
-output "autovpc\_resolver\_query\_log\_config\_arn" {
-  value = module.codreum\_autovpc.resolver\_query\_log\_config\_arn
+output "autovpc\\\_resolver\\\_query\\\_log\\\_config\\\_arn" {
+  value = module.codreum\\\_autovpc.resolver\\\_query\\\_log\\\_config\\\_arn
 }
 ```
 
@@ -428,7 +428,7 @@ The module also exports a subnet plan so you can quickly see:
 
 This free module uses a simple route model:
 
-* if `az\_count == subnet\_count`, every subnet gets an Internet Gateway default
+* if `az\\\_count == subnet\\\_count`, every subnet gets an Internet Gateway default
 route
 * otherwise, only the **first subnet in each AZ** gets the default route
 
@@ -499,10 +499,10 @@ associating query logging to the destination ARN you supply.
 ## Limitations (Free)
 
 * maximum **1 VPC** per deployment
-* supports only `az\_count = 1 or 2`
-* supports only `subnet\_count = 1, 2, or 4`
-* `subnet\_count` must be greater than or equal to `az\_count`
-* `subnet\_count` must be divisible by `az\_count`
+* supports only `az\\\_count = 1 or 2`
+* supports only `subnet\\\_count = 1, 2, or 4`
+* `subnet\\\_count` must be greater than or equal to `az\\\_count`
+* `subnet\\\_count` must be divisible by `az\\\_count`
 * Route 53 Resolver query logging requires a manually supplied destination log
 group ARN
 * this module does **not** create the CloudWatch Logs log group for DNS logs
@@ -536,7 +536,7 @@ Quick links:
 
 ## Terraform inputs and outputs
 
-<!-- BEGIN\_TF\_DOCS -->
+<!-- BEGIN\\\_TF\\\_DOCS -->
 
 ## Requirements
 
@@ -578,7 +578,7 @@ No modules.
 * [**free\_vpc\_config**](#input_free_vpc_config)
 
   * Description: Free VPC configuration map (supports max 1 VPC)
-  * Type: `map(object({ vpc\_base = string, vpc\_mask = number, subnet\_count = number, az\_count = number }))`
+  * Type: `map(object({ vpc\\\_base = string, vpc\\\_mask = number, subnet\\\_count = number, az\\\_count = number }))`
   * Default: n/a
   * Required: yes
 * [**prefix**](#input_prefix)
@@ -612,6 +612,60 @@ No modules.
 * [**resolver\_query\_log\_config\_id**](#output_resolver_query_log_config_id) — n/a
 * [**subnet\_plan**](#output_subnet_plan) — n/a
 * [**vpc\_ids**](#output_vpc_ids) — n/a
+
+<!-- END\\\_TF\\\_DOCS -->
+
+
+
+<!-- BEGIN\_TF\_DOCS -->
+
+## Requirements
+
+No requirements.
+
+## Providers
+
+|Name|Version|
+|-|-|
+|<a name="provider\_aws"></a> [aws](#provider_aws)|n/a|
+
+## Modules
+
+No modules.
+
+## Resources
+
+|Name|Type|
+|-|-|
+|[aws\_internet\_gateway.free\_igw](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway)|resource|
+|[aws\_route53\_resolver\_query\_log\_config.free\_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_resolver_query_log_config)|resource|
+|[aws\_route53\_resolver\_query\_log\_config\_association.free\_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_resolver_query_log_config_association)|resource|
+|[aws\_route\_table.free\_rt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table)|resource|
+|[aws\_route\_table\_association.free\_rt\_assoc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association)|resource|
+|[aws\_subnet.free\_sub](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet)|resource|
+|[aws\_vpc.free\_vpc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc)|resource|
+|[aws\_availability\_zones.available](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones)|data source|
+
+## Inputs
+
+|Name|Description|Type|Default|Required|
+|-|-|-|-|:-:|
+|<a name="input\_aws\_region"></a> [aws\_region](#input_aws_region)|Region for free VPC deployment|`string`|n/a|yes|
+|<a name="input\_enable\_resolver\_query\_logging"></a> [enable\_resolver\_query\_logging](#input_enable_resolver_query_logging)|Enable Route 53 Resolver query logging for the created VPC.|`bool`|`false`|no|
+|<a name="input\_free\_vpc\_config"></a> [free\_vpc\_config](#input_free_vpc_config)|Free VPC configuration map (supports max 1 VPC)|<pre>map(object({<br/>    vpc\_base     = string<br/>    vpc\_mask     = number<br/>    subnet\_count = number<br/>    az\_count     = number<br/>  }))</pre>|n/a|yes|
+|<a name="input\_prefix"></a> [prefix](#input_prefix)|n/a|`string`|n/a|yes|
+|<a name="input\_resolver\_query\_log\_config\_name"></a> [resolver\_query\_log\_config\_name](#input_resolver_query_log_config_name)|Optional name for the Route 53 Resolver query log config.|`string`|`null`|no|
+|<a name="input\_resolver\_query\_log\_destination\_arn"></a> [resolver\_query\_log\_destination\_arn](#input_resolver_query_log_destination_arn)|Destination ARN for Route 53 Resolver query logs. Usually a CloudWatch Logs log group ARN.|`string`|`null`|no|
+|<a name="input\_tags"></a> [tags](#input_tags)|n/a|`map(string)`|`{}`|no|
+
+## Outputs
+
+|Name|Description|
+|-|-|
+|<a name="output\_resolver\_query\_log\_config\_arn"></a> [resolver\_query\_log\_config\_arn](#output_resolver_query_log_config_arn)|n/a|
+|<a name="output\_resolver\_query\_log\_config\_id"></a> [resolver\_query\_log\_config\_id](#output_resolver_query_log_config_id)|n/a|
+|<a name="output\_subnet\_plan"></a> [subnet\_plan](#output_subnet_plan)|n/a|
+|<a name="output\_vpc\_ids"></a> [vpc\_ids](#output_vpc_ids)|n/a|
 
 <!-- END\_TF\_DOCS -->
 
