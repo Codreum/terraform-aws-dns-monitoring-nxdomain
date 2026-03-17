@@ -11,6 +11,18 @@ variable "tags" {
   type = map(string)
 }
 
+variable "NX_enable_vpc" {
+  description = "Enable VPC-scoped NXDOMAIN resources."
+  type        = bool
+  default     = false
+}
+
+variable "NX_enable_zone" {
+  description = "Enable hosted-zone-scoped NXDOMAIN resources."
+  type        = bool
+  default     = false
+}
+
 variable "NX_log_group_name" {
   description = "CloudWatch Logs group for Route 53 Resolver query logs."
   type        = string
@@ -20,12 +32,22 @@ variable "NX_vpc_id" {
   description = "Optional VPC to scope NXDOMAIN client insights & alarm."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.NX_enable_vpc ? var.NX_vpc_id != null : true
+    error_message = "NX_vpc_id must be set when NX_enable_vpc is true."
+  }
 }
 
 variable "NX_zone_id" {
   description = "Optional hosted zone (Zxxxxxxxx) to scope 'top NXDOMAIN names'."
   type        = string
   default     = null
+
+  validation {
+    condition     = var.NX_enable_zone ? var.NX_zone_id != null : true
+    error_message = "NX_zone_id must be set when NX_enable_zone is true."
+  }
 }
 
 variable "dns_alert_sns_arn" {

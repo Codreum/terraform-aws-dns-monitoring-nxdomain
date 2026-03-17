@@ -1,24 +1,39 @@
 <p align="center">
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml">
-    <img src="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main"](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main") alt="CI">
+    <img
+      src="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main"
+      alt="CI"
+    />
   </a>
 
   <a href="https://scorecard.dev/viewer/?uri=github.com/Codreum/terraform-aws-dns-monitoring-nxdomain">
-    <img src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"](https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge") alt="OpenSSF Scorecard">
+    <img
+      src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"
+      alt="OpenSSF Scorecard"
+    />
   </a>
 
   <a href="https://www.bestpractices.dev/projects/11896">
-    <img src="https://www.bestpractices.dev/projects/11896/badge?cachebust=20260209-1" alt="OpenSSF Best Practices">
+    <img
+      src="https://www.bestpractices.dev/projects/11896/badge?cachebust=20260209-1"
+      alt="OpenSSF Best Practices"
+    />
   </a>
 </p>
 
 <p align="center">
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/releases">
-    <img src="https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="Release">
+    <img
+      src="https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain"
+      alt="Release"
+    />
   </a>
 
   <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain"](https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain") alt="License">
+    <img
+      src="https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain"
+      alt="License"
+    />
   </a>
 </p>
 
@@ -31,373 +46,218 @@
 <p align="center">
   <a href="https://www.codreum.com">Website</a> •
   <a href="https://www.codreum.com/products.html#zone">Upgrade</a> •
-  <a href="#quickstart">Quickstart</a>
+  <a href="#available-modules">Modules</a>
 </p>
 
-# Codreum DNS Monitoring (NXDOMAIN)
+# Codreum Terraform AWS Modules
 
-Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using **AWS CloudWatch + Terraform**.
+This repository contains Codreum Terraform modules for AWS DNS monitoring and
+lightweight VPC provisioning.
 
-✅ Dashboards + alarms + anomaly detection
+## Available modules
 
-✅ Works with **Route 53 hosted zone query logs** + **Resolver query logs (VPC)**
+### 1. DNS Monitoring — NXDOMAIN (Free)
 
-✅ Top-N triage views (domain / qtype / edge / source)
+Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using
+**AWS CloudWatch + Terraform**.
 
-This solution is for **NXDOMAIN signals only**. **Codreum Pro** adds broader DNS error metrics and investigation dashboards.
+- Module path: `//modules/nxdomain`
+- Module docs: [`modules/nxdomain/README.md`](./modules/nxdomain/README.md)
 
-- **Deploy:** jump to [Quickstart](#quickstart)
-- **Website:** [https://www.codreum.com](https://www.codreum.com)
-- **Upgrade:** [https://www.codreum.com/products.html#zone](https://www.codreum.com/products.html#zone)
+Example:
 
----
+```hcl
+module "codreum_dns_nx" {
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0"
 
-## Why NXDOMAIN matters
+  prefix            = "acme-dev"
+  aws_region        = "us-east-1"
+  NX_log_group_name = "/aws/route53/resolver-query-logs"
+  dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
 
-NXDOMAIN means “this name does not exist.” A spike is rarely random — it’s usually a signal that **something changed**.
+  NX_vpc_id  = "vpc-0123456789abcdef0"
+  NX_zone_id = "Z123EXAMPLE"
+}
+```
 
-Common causes:
+### 2. AutoVPC (Free)
 
-- broken deployments (wrong domain, missing records, bad service discovery)
-- misconfigured clients / endpoints (typos, outdated configs, DNS suffix issues)
-- malware / beaconing attempts (random subdomains, DGA patterns)
-- expired records or incorrect resolver paths
+Create a constrained, low-complexity VPC layout for free/basic deployments.
 
-Why it’s valuable:
+- Module path: `//modules/autovpc`
+- Module docs: [`modules/autovpc/README.md`](./modules/autovpc/README.md)
 
-- **Fastest indicator of DNS regressions** (before app errors explode)
-- Helps pinpoint **what** is failing and **who** is generating it (Top-N)
-- Works for both **public hosted zones** and **private/VPC resolver** DNS
+Supports optional Route 53 Resolver query logging for the created VPC when
+you provide an existing CloudWatch Logs log group ARN.
 
----
+Example:
 
-## Why AWS CloudWatch (in-account) instead of external DNS monitoring?
+```hcl
+module "codreum_autovpc" {
+  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 
-External checkers are useful, but they often miss the failures you actually care about:
+  prefix     = "acme-dev-"
+  aws_region = "us-east-1"
 
-- External monitors can only test **public DNS** and a small set of resolvers.
-- They can’t see **your internal resolver traffic** (VPC Resolver logs).
-- They typically miss **client-specific failures** and “partial outages” (only some subnets, only some clients, only some edges).
+  free_vpc_config = {
+    main = {
+      vpc_base     = "10.10.0.0"
+      vpc_mask     = 24
+      subnet_count = 2
+      az_count     = 2
+    }
+  }
 
-This module uses **your real DNS query logs** inside AWS:
+  enable_resolver_query_logging   = true
+  resolver_query_log_destination_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/resolver-query-logs"
+}
+```
 
-- captures failures from **real production clients**
-- supports **private/internal DNS** (VPC resolver queries)
-- triages by **top offending domain / qtype / edge / source IP**
-- avoids shipping DNS logs to third parties
+## Module comparison
 
-> Privacy note: this module does **not** send DNS logs to Codreum. Everything stays inside your AWS account.
+### NXDOMAIN
 
----
-
-## What you get (Free)
-
-✅ Included:
-
-1. NXDOMAIN **count** alarm (Zone + VPC)
-1. NXDOMAIN **rate (%)** alarm (Zone + VPC)
-1. NXDOMAIN **Anomaly detection** alarms (count + rate)
-1. CloudWatch dashboards:
-   - Zone dashboard
-   - VPC dashboard
-   - Ops landing dashboard
-1. Top-N triage views
-   - Zone: Top NXDOMAIN by domain/qtype/edge/source
-   - VPC: Top NXDOMAIN by qname/source
-1. SNS integration: alarms publish to your provided SNS topic (`dns_alert_sns_arn`)
-
-🚫 Not included (Free):
-
-1. Additional DNS error metrics (SERVFAIL/REFUSED/etc.)
-1. Expanded Contributor Insights packs and dashboards beyond NXDOMAIN
-1. Licensing, enforcement, premium support / SLA (Pro)
-1. Log group management (Pro)
-
-| Capability | NXDOMAIN | Pro |
+| Capability | Free | Pro |
 | --- | :---: | :---: |
 | NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
-| NXDOMAIN dashboards (Zone/VPC baseline) | ✅ | ✅ |
-| Additional DNS metrics + Contributor Insights packs (SERVFAIL/REFUSED/etc.) | ❌ | ✅ |
-| Per zone metrics/Alarm/CI toggle | ❌ | ✅ |
-| Per-zone metric dashboards (beyond NXDOMAIN) | ❌ | ✅ |
+| NXDOMAIN dashboards (Zone / VPC baseline) | ✅ | ✅ |
+| Additional DNS metrics + Contributor Insights packs | ❌ | ✅ |
+| Per-zone metrics / alarm / CI toggle | ❌ | ✅ |
+| Per-zone metric dashboards beyond NXDOMAIN | ❌ | ✅ |
 | Per-zone Top-N dashboards (expanded) | ❌ | ✅ |
 | Built-in SNS wiring presets (Email / Slack / SMS) | ❌ | ✅ |
 | Log group management | ❌ | ✅ |
-| Multiple zone/VPC IDs in one deployment | ❌ | ✅ |
-| Advanced dashboards (Ops landing / Investigation / Forensics) | ❌ | ✅ |
-| Licensing & enforcement | ❌ | ✅ |
+| Multiple zone / VPC IDs in one deployment | ❌ | ✅ |
+| Advanced dashboards (Ops / Investigation / Forensics) | ❌ | ✅ |
+| Licensing and enforcement | ❌ | ✅ |
 | Support / SLA | ❌ | ✅ |
 
----
+### AutoVPC
 
-## How it works (simple architecture)
+| Capability | Free | Pro |
+| --- | :---: | :---: |
+| Single VPC deployment | ✅ | ✅ |
+| Supported AZ count | 1 or 2 only | 1, 2, or 4 |
+| Supported subnet_count | 1, 2, or 4 only | 1 to 64 (power-of-2 options) |
+| Optional Resolver query logging enablement | ✅ | ✅ |
+| CloudWatch Logs log group creation for DNS logs | ❌ manual ARN required | Depends on Pro packaging |
+| NAT support | ❌ | ✅ |
+| Basic subnet auto-splitting | ✅ | ✅ |
+| Basic route table setup | ✅ | ✅ |
+| Internet Gateway wiring | ✅ | ✅ |
+| IPv6 / dual-stack controls | ❌ | ✅ |
+| Flow logs | ❌ | ✅ |
+| Gateway endpoints | ❌ | ✅ |
+| Interface endpoints | ❌ | ✅ |
+| DNS firewall integration | ❌ | ✅ |
+| Internet Monitor integration | ❌ | ✅ |
+| VPC / subnet metric alarms | ❌ | ✅ |
+| License validation / enforcement | ❌ | ✅ |
+| License watcher + alerts | ❌ | ✅ |
+| Support / SLA | ❌ | ✅ |
 
-This module:
+## Repository structure
 
-1. reads from an existing CloudWatch Logs group containing DNS logs (`NX_log_group_name`)
-1. creates:
-   - Log metric filters → custom metrics in `Codreum/DNSCI`
-   - CloudWatch alarms (static + rate % + anomaly)
-   - Contributor Insights rules + Logs Insights widgets (Top-N triage)
-   - Dashboards (zone, vpc, ops landing)
-1. sends alarm notifications to your SNS topic (`dns_alert_sns_arn`)
+```text
+.
+├── README.md
+├── example/
+├── modules/
+│   ├── nxdomain/
+│   │   └── README.md
+│   └── autovpc/
+│       └── README.md
+└── docs/
+```
 
----
+## Versioning
 
-## Prerequisites
+This repository uses Git tags for releases.
 
-1. Terraform >= 1.12
-1. AWS provider >= 6.2
-1. A CloudWatch Logs group already receiving DNS logs:
-   - **Zone mode:** Route 53 hosted zone query logs (CLF-like fields include `hosted_zone_id`, `rcode`, `qname`, etc.)
-   - **VPC mode:** JSON resolver query logs (fields include `vpc_id`, `rcode`, `srcaddr`, `query_name` / `qname`, etc.)
-1. Region constraints (AWS limitation)
-   - **Zone mode (`NX_zone_id`)**: Route 53 *public hosted zone* query logging requires the CloudWatch Logs log group in **`us-east-1` (US East / N. Virginia)**. Deploy this module in **`us-east-1`** for Zone mode.
-   - **VPC mode (`NX_vpc_id`)**: Resolver query logging is **regional**. Create the query logging configuration and destination (CloudWatch log group) in the **same region as the VPC**. If you have VPCs in multiple regions, deploy one module per region.
-   - If you need both Zone + VPC monitoring across different regions, deploy **two module instances**: one in **`us-east-1`** for Zone mode, plus one per VPC region for Resolver mode.
+When multiple modules live in the same repository, the tag versions the whole
+repository snapshot. Both `nxdomain` and `autovpc` should therefore be pinned
+using the same repo tag.
 
----
-
-## Configuration
-
-Required:
-
-- `prefix`
-- `aws_region`
-- `NX_log_group_name`
-- `dns_alert_sns_arn`
-- Provide at least one:
-  - `NX_zone_id` (enables zone alarms/dashboards/widgets)
-  - `NX_vpc_id` (enables vpc alarms/dashboards/widgets)
-
-You can enable zone monitoring, VPC monitoring, or both.
-
----
-
-## Quickstart
-
-1. Ensure DNS query logs are flowing into CloudWatch Logs:
-
-   - Hosted zone query logs (CLF-like)
-   - Resolver query logs (JSON)
-
-1. Copy/paste into `main.tf`:
+Examples:
 
 ```hcl
-module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v1.0.0"
-
-  prefix              = "acme-dev"
-  aws_region          = "us-east-1"
-  NX_log_group_name = "/aws/route53/resolver-query-logs"  # must match your CloudWatch log group name
-  dns_alert_sns_arn   = "arn:aws:sns:us-east-1:123456789012:alerts" # change to your SNS ARN
-
-  # Enable one or both:
-  NX_vpc_id  = "vpc-0123456789abcdef0" # optional
-  NX_zone_id = "Z123EXAMPLE"           # optional
-}
+source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0"
 ```
-
-You can also copy the main.tf file from example folder, and make the minimal edit
-
-- replace  module source with "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules?ref=v0.1.0"
-- Change NX_log_group_name , dns_alert_sns_arn, NX_vpc_id or/and NX_zone_id to your own resource
-- Change the aws_region to the VPC Region, if you are using VPC Mode
-- If using Zone mode, make sure aws_region = "us-east-1" (required by Route 53 query logging)
-
-1. (optional) this module exports dashboard URLs, alarm ARNs, and metric names via Terraform outputs. If you want the output, paste this code too into your own main.tf
 
 ```hcl
-output "dns_NX_enabled" {
-  value = module.codreum_dns_NX.enabled
-}
-
-output "dns_NX_dashboards" {
-  value = module.codreum_dns_NX.dashboards
-}
-
-output "dns_NX_alarms" {
-  value = module.codreum_dns_NX.alarms
-}
-
-output "dns_NX_metrics" {
-  value = module.codreum_dns_NX.metrics
-}
-
-output "dns_NX_ci_rules" {
-  value = module.codreum_dns_NX.contributor_insights_rules
-}
+source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
 ```
 
-You can also copy the output.tf file from example folder
+## Free vs Pro
 
-1. Deploy :
+This repository contains the **free** NXDOMAIN and AutoVPC modules.
 
-terraform init
+Codreum Pro adds broader DNS monitoring and advanced VPC capabilities as a paid
+package. The current plan is for **DNS Pro** and **AutoVPC Pro** to live
+together in the Pro repository/package.
 
-terraform apply
+Planned Pro package positioning:
 
-## What you’ll see after deploy
+- **Codreum DNS Pro**
+- **Codreum AutoVPC Pro**
+- bundled together as the **USD 49.99** package
 
-After `terraform apply`, you’ll have CloudWatch **dashboards**, **alarms**, and **Contributor Insights** rules created in your AWS account.
+See the product page for upgrade information:
 
-> Tip: Open **CloudWatch → Dashboards** and search for your `prefix` (e.g., `acme-dev-*`).
+- [https://www.codreum.com/products.html#zone](https://www.codreum.com/products.html#zone)
 
-### 1) Dashboards (Ops / Zone / VPC)
+## Examples
 
-You’ll get an Ops landing page plus dashboards for the modes you enabled:
+This repository includes examples for both modules, including a combined
+AutoVPC + NXDOMAIN example.
 
-- **Ops landing**: quick links + “what to check first”
-- **Zone dashboard** (if `NX_zone_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N breakdowns
-- **VPC dashboard** (if `NX_vpc_id` is set): NXDOMAIN count, rate %, anomaly band, Top-N by source/qname
+Example areas include:
 
-![Dashboards](./screenshot/dashboard3.jpg)
+- `example/both-zone-vpc`
+- `example/zone-only`
+- `example/vpc-only`
+- `example/autovpc-1az`
+- `example/autovpc-2az`
+- `example/autovpc-4subnets-2az`
+- `example/autovpc-with-dns-vpc`
 
-![Dashboards](./screenshot/dashboard1.jpg)
+> Note: the CloudWatch Logs log group must already exist. The AutoVPC free
+> module does not create the log group for DNS logs.
 
-![Dashboards](./screenshot/dashboard2.jpg)
+For module-specific usage and inputs, see:
 
-#### How to use
+- [`modules/nxdomain/README.md`](./modules/nxdomain/README.md)
+- [`modules/autovpc/README.md`](./modules/autovpc/README.md)
 
-- If alarms fire, start at **Ops landing**, then jump into **Zone/VPC** dashboard.
-- Use **Top-N** tables to identify the top failing domains, qtype, edge, and source IPs.
+## Using both modules together
 
----
+Yes — both modules can be used in the same Terraform root configuration.
 
-### 2) Alarms (Count / Rate / Anomaly)
+Typical combined flow:
 
-This module creates alarms for:
+- AutoVPC creates the VPC
+- AutoVPC optionally enables Resolver query logging for that VPC
+- NXDOMAIN consumes the existing CloudWatch Logs log group by name
+- NXDOMAIN monitors the VPC by using the VPC ID produced by AutoVPC
 
-- **NXDOMAIN count** (static threshold)
-- **NXDOMAIN rate (%)** (error rate)
-- **Anomaly detection** on both count and rate
+Important note:
 
-Alarms publish to your SNS topic (`dns_alert_sns_arn`).
-
-![Alarms](./screenshot/alarm.jpg)
-
-![Alarms](./screenshot/alarm2.jpg)
-
-![Alarms](./screenshot/email_alert.jpg)
-
-#### What to check
-
-- **Count alarm**: sudden volume spike (often broken deploy / client loop)
-- **Rate alarm**: NXDOMAIN becoming a larger share of total queries
-- **Anomaly alarms**: unexpected behavior even if below static thresholds
-
----
-
-### 3) Contributor Insights (Top-N triage)
-
-Contributor Insights rules are used for “Top-N” analysis (fast triage):
-
-- Zone: top NXDOMAIN by **qname / qtype / edge / source**
-- VPC: top NXDOMAIN by **qname / source**
-
-![Contributor Insights](./screenshot/CI1.jpg)
-
-![Contributor Insights](./screenshot/CI2.jpg)
-
-#### How to use (Contributor Insights)
-
-- Open **CloudWatch → Contributor Insights**
-- Filter by your `prefix`
-- Start with **Top qname** and **Top source** to quickly locate the cause
-
-## Upgrade to Codreum Pro
-
-Codreum Pro adds:
-
-1. More DNS metrics (SERVFAIL/REFUSED/overall error, success rate, etc.)
-1. More pre-built metric alarms, contributor insight packs
-1. More dashboards with richer, opinionated investigation widgets
-1. subscription management & support options
-1. Multi-zone / multi-vpc support
-1. Optional prebuilt alerting integrations (email / Slack / SMS) via SNS setup
-
-Learn more: [https://www.codreum.com/products.html#zone](https://www.codreum.com/products.html#zone)
-
-## Costs (AWS billed)
-
-This module creates CloudWatch resources that may incur AWS charges, depending on usage, region, and free tier.
-
-- **Contributor Insights rules**: used for Top-N analysis (e.g., top NXDOMAIN domains/clients). Charged per rule and usage.
-- **Custom metrics**: metric filters publish metrics under `Codreum/DNSCI` (e.g., `ZoneNXDOMAIN`, `VpcNXDOMAIN`). Custom metrics may be billed by AWS.
-- **CloudWatch alarms**: static threshold, rate (%), and anomaly alarms may be billed by AWS.
-
-See AWS pricing: [https://aws.amazon.com/cloudwatch/pricing/](https://aws.amazon.com/cloudwatch/pricing/)
-
-## Security & data
-
-- This module does **not** send DNS logs to Codreum.
-- All analysis happens inside your AWS account using CloudWatch Logs / Metrics / Contributor Insights.
-- Alarm notifications are published only to your SNS topic.
-
-## Signed releases & provenance
-
-Every GitHub Release for this project includes **cryptographically signed artifacts** and **SLSA provenance**.
-
-### What’s included in a release
-
-Typical release assets include:
-
-- `terraform-aws-dns-monitoring-nxdomain-<version>.tar.gz` (packaged source)
-- `SHA256SUMS` (checksums)
-- `sbom.spdx.json` (SBOM)
-- `*.sigstore.json` (Sigstore “bundle” signatures for the files above)
-- `multiple.intoto.jsonl` (SLSA provenance)
-
-> Signatures are created using **cosign keyless signing** via GitHub Actions OIDC (no long-lived keys).
-
-### Verify signatures (cosign)
-
-1) Download a release asset and its corresponding `*.sigstore.json` bundle from the GitHub Release assets.
-
-2) Verify the artifact:
-
-```bash
-VERSION=v1.0.0
-cosign verify-blob   --bundle terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz.sigstore.json   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
-```
-
-Verify the other assets the same way:
-
-```bash
-cosign verify-blob --bundle SHA256SUMS.sigstore.json SHA256SUMS
-cosign verify-blob --bundle sbom.spdx.json.sigstore.json sbom.spdx.json
-```
-
-### Verify provenance (SLSA)
-
-Each release includes a provenance file (e.g. `multiple.intoto.jsonl`). Verify that the artifact was built from this repository/tag:
-
-```bash
-REPO="github.com/Codreum/terraform-aws-dns-monitoring-nxdomain"
-VERSION=v1.0.0
-
-slsa-verifier verify-artifact   --provenance-path multiple.intoto.jsonl   --source-uri "${REPO}"   --source-tag "${VERSION}"   terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
-```
-
-## Limitations (Free)
-
-- Designed for **one zone and/or one VPC** per deployment.
-- Only NXDOMAIN signals are included.
-- Assumes logs already exist in CloudWatch Logs.
+- AutoVPC does not create the CloudWatch Logs log group for DNS logs
+- NXDOMAIN also does not create that log group in the free module
+- if you enable Resolver query logging, you must manually supply an existing CloudWatch Logs log group ARN to AutoVPC
+- NXDOMAIN must be pointed at that existing log group by name
 
 ## Support
 
 - Free: community support via GitHub Issues
-  - Bug reports: open an issue using the **Bug report** template
-  - Feature requests: open an issue using the **Feature request** template
-- Contributing: see CONTRIBUTING.md (PRs welcome)
-- Security issues: see SECURITY.md
+- Security issues: see `SECURITY.md`
+- Contributions: see `CONTRIBUTING.md`
 
 Quick links:
 
 - [Issues](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues)
-- [New issue (choose template)](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
+- [New issue](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
 - [Contributing](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/CONTRIBUTING.md)
 - [Security](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/SECURITY.md)
 - [Documentation](https://www.codreum.com/docs.html)

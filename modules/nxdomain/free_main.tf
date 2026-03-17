@@ -3,18 +3,18 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 data "aws_route53_zone" "NX_zone" {
-  count   = var.NX_zone_id != null ? 1 : 0
+  count   = var.NX_enable_zone ? 1 : 0
   zone_id = var.NX_zone_id
 }
 
 locals {
-  NX_zone_name = var.NX_zone_id != null ? trimsuffix(data.aws_route53_zone.NX_zone[0].name, ".") : null
+  NX_zone_name = var.NX_enable_zone ? trimsuffix(data.aws_route53_zone.NX_zone[0].name, ".") : null
   product_code = "nxd"
 }
 
 locals {
-  has_vpc  = var.NX_vpc_id != null
-  has_zone = var.NX_zone_id != null
+  has_vpc  = var.NX_enable_vpc
+  has_zone = var.NX_enable_zone
 }
 
 locals {
@@ -211,7 +211,7 @@ resource "aws_cloudwatch_metric_alarm" "zone_nxdomain_alarm" {
   alarm_actions     = [var.dns_alert_sns_arn]
   ok_actions        = [var.dns_alert_sns_arn]
   alarm_description = "NXDOMAIN count for zone ${local.NX_zone_name} exceeded threshold."
-  depends_on        = [aws_cloudwatch_log_metric_filter.zone_nxdomain_count]
+  depends_on        = [aws_cloudwatch_log_metric_filter.zone_nxdomain_count[0]]
   tags              = merge({ "codreum:type" = local.product_code, "codreum:prefix" = var.prefix, "codreum:subject" = "zone:${var.NX_zone_id}" }, var.tags)
 }
 
@@ -258,8 +258,8 @@ resource "aws_cloudwatch_metric_alarm" "zone_nxdomain_rate_alarm" {
   ok_actions    = [var.dns_alert_sns_arn]
 
   depends_on = [
-    aws_cloudwatch_log_metric_filter.zone_nxdomain_count,
-    aws_cloudwatch_log_metric_filter.zone_total_count
+    aws_cloudwatch_log_metric_filter.zone_nxdomain_count[0],
+    aws_cloudwatch_log_metric_filter.zone_total_count[0]
   ]
 
   tags = merge({
@@ -396,7 +396,7 @@ resource "aws_cloudwatch_log_metric_filter" "vpc_nxdomain_count" {
     value      = "1"
     dimensions = { VpcId = "$.vpc_id" }
   }
-  depends_on = [aws_cloudwatch_contributor_insight_rule.vpc_topn_nxdomain_qname]
+  depends_on = [aws_cloudwatch_contributor_insight_rule.vpc_topn_nxdomain_qname[0]]
 }
 
 resource "aws_cloudwatch_log_metric_filter" "vpc_total_count" {
@@ -436,7 +436,7 @@ resource "aws_cloudwatch_metric_alarm" "vpc_nxdomain_alarm" {
   ok_actions        = [var.dns_alert_sns_arn]
   alarm_description = "NXDOMAIN count for VPC ${var.NX_vpc_id} exceeded threshold."
 
-  depends_on = [aws_cloudwatch_log_metric_filter.vpc_nxdomain_count]
+  depends_on = [aws_cloudwatch_log_metric_filter.vpc_nxdomain_count[0]]
   tags       = merge({ "codreum:type" = local.product_code, "codreum:prefix" = var.prefix, "codreum:subject" = "vpc:${var.NX_vpc_id}" }, var.tags)
 }
 
@@ -485,8 +485,8 @@ resource "aws_cloudwatch_metric_alarm" "vpc_nxdomain_rate_alarm" {
   ok_actions    = [var.dns_alert_sns_arn]
 
   depends_on = [
-    aws_cloudwatch_log_metric_filter.vpc_nxdomain_count,
-    aws_cloudwatch_log_metric_filter.vpc_total_count
+    aws_cloudwatch_log_metric_filter.vpc_nxdomain_count[0],
+    aws_cloudwatch_log_metric_filter.vpc_total_count[0]
   ]
 
   tags = merge({

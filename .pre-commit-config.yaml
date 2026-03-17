@@ -2,7 +2,7 @@ repos:
   - repo: local
     hooks:
       - id: terraform-docs
-        name: terraform-docs (inject modules/README.md)
+        name: terraform-docs (inject module READMEs)
         language: system
         entry: python3 scripts/terraform_docs_hook.py
         args: []
