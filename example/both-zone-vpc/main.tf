@@ -30,8 +30,8 @@ module "codreum_dns_NX" {
 
   NX_log_group_name = "/aws/route53/free.codreum.com"
   dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789123:test-topic"
-  NX_enable_zone  = true
-  NX_enable_vpc  = true
+  NX_enable_zone    = true
+  NX_enable_vpc     = true
   NX_zone_id        = "Z06819422VITX178DF26Z"
   NX_vpc_id         = "vpc-06926d7bfefae789c"
 
