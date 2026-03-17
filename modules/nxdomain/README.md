@@ -49,7 +49,7 @@
   <a href="#quickstart">Quickstart</a>
 </p>
 
-# Codreum DNS Monitoring (NXDOMAIN)
+# Codreum DNS Observability (NXDOMAIN)
 
 Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using
 **AWS CloudWatch + Terraform**.
@@ -111,7 +111,7 @@ This module uses **your real DNS query logs** inside AWS:
 
 ---
 
-## What you get (Free)
+## What you get (Core)
 
 ✅ Included:
 
@@ -128,14 +128,14 @@ This module uses **your real DNS query logs** inside AWS:
 1. SNS integration: alarms publish to your provided SNS topic
    (`dns_alert_sns_arn`)
 
-🚫 Not included (Free):
+🚫 Not included (Core):
 
 1. Additional DNS error metrics (SERVFAIL / REFUSED / etc.)
 1. Expanded Contributor Insights packs and dashboards beyond NXDOMAIN
 1. Licensing, enforcement, premium support / SLA (Pro)
 1. Log group management (Pro)
 
-| Capability | NXDOMAIN | Pro |
+| Capability | Core | Pro |
 | --- | :---: | :---: |
 | NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
@@ -194,21 +194,35 @@ Required:
 - `NX_log_group_name`
 - `dns_alert_sns_arn`
 
-Provide at least one:
+Enable at least one mode:
 
-- `NX_zone_id` (enables zone alarms / dashboards / widgets)
-- `NX_vpc_id` (enables VPC alarms / dashboards / widgets)
+- `NX_enable_zone = true` to create hosted-zone-scoped NXDOMAIN resources
+- `NX_enable_vpc  = true` to create VPC-scoped NXDOMAIN resources
 
-You can enable zone monitoring, VPC monitoring, or both.
+When a mode is enabled, the matching ID is required:
+
+- `NX_zone_id` is required when `NX_enable_zone = true`
+- `NX_vpc_id` is required when `NX_enable_vpc  = true`
+
+You can enable zone monitoring, VPC monitoring, or both at the same time.
+If an ID is set while its toggle is `false`, Terraform accepts it but the module ignores that value and does not create resources for that mode.
 
 ---
 
 ## Modes (Zone vs VPC)
 
-This module can operate in either or both modes:
+This module can operate in either or both modes, controlled by explicit toggle variables:
 
-- **Zone mode**: enabled when `NX_zone_id` is set
-- **VPC mode**: enabled when `NX_vpc_id` is set
+- **Zone mode**: set `NX_enable_zone = true` and provide `NX_zone_id`
+- **VPC mode**: set `NX_enable_vpc = true` and provide `NX_vpc_id`
+
+The toggles are independent, so you can run:
+
+- **Zone only**: `NX_enable_zone = true`, `NX_enable_vpc = false`
+- **VPC only**: `NX_enable_zone = false`, `NX_enable_vpc = true`
+- **Both together**: `NX_enable_zone = true`, `NX_enable_vpc = true`
+
+If a mode is disabled, any value left in the corresponding ID variable is ignored.
 
 ---
 
@@ -228,7 +242,10 @@ module "codreum_dns_NX" {
   NX_log_group_name = "/aws/route53/resolver-query-logs"
   dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
 
-  # Enable one or both:
+  # Enable one or both modes explicitly:
+  NX_enable_vpc  = true
+  NX_enable_zone = true
+
   NX_vpc_id  = "vpc-0123456789abcdef0"
   NX_zone_id = "Z123EXAMPLE"
 }
@@ -239,8 +256,8 @@ edits:
 
 - replace the module source with
   `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0`
-- change `NX_log_group_name`, `dns_alert_sns_arn`, `NX_vpc_id`, or
-  `NX_zone_id` to your own resources
+- change `NX_log_group_name`, `dns_alert_sns_arn`, `NX_enable_vpc`,
+  `NX_enable_zone`, `NX_vpc_id`, or `NX_zone_id` to your own resources
 - change `aws_region` to the VPC region if you are using VPC mode
 - if using Zone mode, make sure `aws_region = "us-east-1"`
 
@@ -269,6 +286,105 @@ output "dns_NX_ci_rules" {
 }
 ```
 
+### Toggle examples
+
+#### Zone only
+
+```hcl
+module "codreum_dns_NX" {
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+
+  prefix            = "acme-dev"
+  aws_region        = "us-east-1"
+  NX_log_group_name = "/aws/route53/zone-query-logs"
+  dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
+
+  NX_enable_zone = true
+  NX_enable_vpc  = false
+
+  NX_zone_id = "Z123EXAMPLE"
+  NX_vpc_id  = null
+}
+```
+
+#### VPC only
+
+```hcl
+module "codreum_dns_NX" {
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+
+  prefix            = "acme-dev"
+  aws_region        = "ap-southeast-1"
+  NX_log_group_name = "/aws/route53/resolver-query-logs"
+  dns_alert_sns_arn = "arn:aws:sns:ap-southeast-1:123456789012:alerts"
+
+  NX_enable_zone = false
+  NX_enable_vpc  = true
+
+  NX_zone_id = null
+  NX_vpc_id  = "vpc-0123456789abcdef0"
+}
+```
+
+#### Zone + VPC together
+
+```hcl
+module "codreum_dns_NX" {
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+
+  prefix            = "acme-dev"
+  aws_region        = "us-east-1"
+  NX_log_group_name = "/aws/route53/resolver-query-logs"
+  dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
+
+  NX_enable_zone = true
+  NX_enable_vpc  = true
+
+  NX_zone_id = "Z123EXAMPLE"
+  NX_vpc_id  = "vpc-0123456789abcdef0"
+}
+```
+
+#### Using AutoVPC with the NXDOMAIN module
+
+This is the recommended pattern when you want both modules in the same root
+configuration:
+
+```hcl
+module "codreum_autovpc" {
+  source = "../../modules/autovpc"
+
+  prefix     = "acme-dev-"
+  aws_region = "us-east-1"
+
+  free_vpc_config = {
+    main = {
+      vpc_base     = "10.40.0.0"
+      vpc_mask     = 24
+      subnet_count = 2
+      az_count     = 2
+    }
+  }
+
+  enable_resolver_query_logging   = true
+  resolver_query_log_destination_arn = "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53/resolver-query-logs"
+}
+
+module "codreum_dns_NX" {
+  source = "../../modules/nxdomain"
+
+  prefix            = "acme-dev"
+  aws_region        = "us-east-1"
+  NX_log_group_name = "/aws/route53/resolver-query-logs"
+  dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
+
+  NX_enable_vpc  = true
+  NX_vpc_id = module.codreum_autovpc.vpc_ids["main"]
+}
+```
+
+> Note: if `NX_enable_zone` or `NX_enable_vpc` is `false`, the module does not create resources for that mode even if the corresponding ID variable is still populated.
+
 1. Deploy:
 
 ```bash
@@ -291,8 +407,8 @@ and **Contributor Insights** rules created in your AWS account.
 You will get an Ops landing page plus dashboards for the modes you enabled:
 
 - **Ops landing**: quick links + what to check first
-- **Zone dashboard**: if `NX_zone_id` is set
-- **VPC dashboard**: if `NX_vpc_id` is set
+- **Zone dashboard**: if `NX_enable_zone = true` and `NX_zone_id` is set
+- **VPC dashboard**: if `NX_enable_vpc = true` and `NX_vpc_id` is set
 
 ![Dashboards](../../screenshot/dashboard3.jpg)
 
@@ -352,16 +468,17 @@ Contributor Insights rules are used for fast Top-N analysis:
 
 ---
 
-## Upgrade to Codreum Pro
+## Upgrade to Codreum AWS Observability Pro
 
 Codreum Pro adds:
 
-1. more DNS metrics (SERVFAIL / REFUSED / overall error / success rate)
-1. more pre-built metric alarms and Contributor Insights packs
-1. richer dashboards with more investigation widgets
-1. subscription management and support options
-1. multi-zone / multi-VPC support
-1. optional prebuilt alerting integrations via SNS setup
+1. more DNS metrics (SERVFAIL / REFUSED / overall error / success rate / more)
+2. more pre-built metric alarms and Contributor Insights packs
+3. richer dashboards with more investigation widgets
+4. subscription management and support options
+5. multi-zone / multi-VPC support
+6. optional prebuilt alerting integrations via SNS setup
+7. AutoVPC module (Pro)
 
 Learn more:
 [https://www.codreum.com/products.html#zone](https://www.codreum.com/products.html#zone)
@@ -445,7 +562,7 @@ slsa-verifier verify-artifact \
 
 ---
 
-## Limitations (Free)
+## Limitations (Core)
 
 - Designed for **one zone and/or one VPC** per deployment
 - Only NXDOMAIN signals are included
@@ -545,7 +662,7 @@ No modules.
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | n/a | yes |
 | <a name="input_dns_alert_sns_arn"></a> [dns\_alert\_sns\_arn](#input\_dns\_alert\_sns\_arn) | SNS ARN for alarms. | `string` | n/a | yes |
 | <a name="input_prefix"></a> [prefix](#input\_prefix) | n/a | `string` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(string)` | `{}` | no |
 
 ## Outputs
 

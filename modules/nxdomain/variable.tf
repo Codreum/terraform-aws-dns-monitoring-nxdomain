@@ -8,7 +8,8 @@ variable "aws_region" {
 
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
 
 variable "NX_enable_vpc" {

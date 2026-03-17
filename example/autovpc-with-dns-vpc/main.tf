@@ -53,8 +53,8 @@ module "codreum_dns_NX" {
   NX_log_group_name = "/aws/route53/resolver-query-logs"
 
   dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789123:test-topic"
-
-  NX_vpc_id = module.codreum_autovpc.vpc_ids["main"]
+  NX_enable_vpc     = true
+  NX_vpc_id         = module.codreum_autovpc.vpc_ids["main"]
 
   # Optional if you also want to monitor a hosted zone in the same deployment:
   # NX_zone_id = "Z123EXAMPLE"

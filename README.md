@@ -51,12 +51,12 @@
 
 # Codreum Terraform AWS Modules
 
-This repository contains Codreum Terraform modules for AWS DNS monitoring and
-lightweight VPC provisioning.
+This repository contains Codreum Terraform modules for AWS NXDOMAIN Observability and
+lightweight VPC provisioning module, AutoVPC (Core)
 
 ## Available modules
 
-### 1. DNS Monitoring — NXDOMAIN (Free)
+### 1. DNS Observability — NXDOMAIN
 
 Detect DNS misconfigurations fast by alerting on **NXDOMAIN spikes** using
 **AWS CloudWatch + Terraform**.
@@ -75,12 +75,14 @@ module "codreum_dns_nx" {
   NX_log_group_name = "/aws/route53/resolver-query-logs"
   dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
 
+  NX_enable_zone = true
+  NX_enable_vpc  = true
   NX_vpc_id  = "vpc-0123456789abcdef0"
   NX_zone_id = "Z123EXAMPLE"
 }
 ```
 
-### 2. AutoVPC (Free)
+### 2. AutoVPC
 
 Create a constrained, low-complexity VPC layout for free/basic deployments.
 
@@ -113,11 +115,11 @@ module "codreum_autovpc" {
 }
 ```
 
-## Module comparison
+## Module's Tier comparison
 
 ### NXDOMAIN
 
-| Capability | Free | Pro |
+| Capability | Core | Pro |
 | --- | :---: | :---: |
 | NXDOMAIN static alarms + anomaly detection | ✅ | ✅ |
 | NXDOMAIN Contributor Insights (Top-N rules) | ✅ | ✅ |
@@ -135,7 +137,7 @@ module "codreum_autovpc" {
 
 ### AutoVPC
 
-| Capability | Free | Pro |
+| Capability | Core | Pro |
 | --- | :---: | :---: |
 | Single VPC deployment | ✅ | ✅ |
 | Supported AZ count | 1 or 2 only | 1, 2, or 4 |
@@ -189,9 +191,9 @@ source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?
 source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
 ```
 
-## Free vs Pro
+## Core vs Pro
 
-This repository contains the **free** NXDOMAIN and AutoVPC modules.
+This repository contains the NXDOMAIN and AutoVPC modules.
 
 Codreum Pro adds broader DNS monitoring and advanced VPC capabilities as a paid
 package. The current plan is for **DNS Pro** and **AutoVPC Pro** to live
@@ -202,6 +204,12 @@ Planned Pro package positioning:
 - **Codreum DNS Pro**
 - **Codreum AutoVPC Pro**
 - bundled together as the **USD 49.99** package
+
+### Bundle roadmap
+
+Codreum Pro is designed to grow as a **bundled package**, not just as a one-time feature set. Over time, new functions and capabilities may be delivered in two ways: by **expanding the existing modules** already included in the package, such as NXDOMAIN and AutoVPC, and by **adding new modules** into the same bundle when they are ready for release.
+
+This means the package is intended to evolve both in **depth** and **breadth**: deeper improvements to the modules customers already use today, and broader platform coverage through additional modules and feature sets introduced under the same Core/Pro offering. Exact scope and rollout timing may change, but the direction is consistent: one Codreum Core/Pro bundle that continues to improve existing modules while also gaining new modules over time.
 
 See the product page for upgrade information:
 
@@ -222,7 +230,7 @@ Example areas include:
 - `example/autovpc-4subnets-2az`
 - `example/autovpc-with-dns-vpc`
 
-> Note: the CloudWatch Logs log group must already exist. The AutoVPC free
+> Note: the CloudWatch Logs log group must already exist. The AutoVPC
 > module does not create the log group for DNS logs.
 
 For module-specific usage and inputs, see:

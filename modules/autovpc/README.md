@@ -49,7 +49,7 @@
   <a href="#quickstart">Quickstart</a>
 </p>
 
-# Codreum AutoVPC (Free)
+# Codreum AutoVPC (Core)
 
 Create a constrained AWS VPC layout fast using **Terraform**.
 
@@ -61,7 +61,7 @@ Create a constrained AWS VPC layout fast using **Terraform**.
 
 ✅ Can optionally enable **Route 53 Resolver query logging** for the created VPC
 
-This solution is for **free/basic VPC deployment**. **Codreum Pro** adds
+This solution is for **basic VPC deployment**. **Codreum AutoVPC Pro** adds
 broader VPC capabilities, license handling, and richer deployment options.
 
 - **Deploy:** jump to [Quickstart](#quickstart)
@@ -115,7 +115,7 @@ This module uses a **constrained free model**:
 
 ---
 
-## What you get (Free)
+## What you get (Core)
 
 ✅ Included:
 
@@ -128,7 +128,7 @@ This module uses a **constrained free model**:
 1. validation for supported subnet and AZ combinations
 1. optional Route 53 Resolver query logging association for the created VPC
 
-🚫 Not included (Free):
+🚫 Not included (Core):
 
 1. CloudWatch Logs log group creation for DNS logs
 1. NAT gateway support
@@ -142,7 +142,7 @@ This module uses a **constrained free model**:
 1. premium support / SLA
 1. multi-VPC free deployment
 
-| Capability | Free | Pro |
+| Capability | Core | Pro |
 | --- | :---: | :---: |
 | Single VPC deployment | ✅ | ✅ |
 | Supported AZ count | 1 or 2 only | 1, 2, or 4 |
@@ -235,7 +235,7 @@ Resolver query logging rules:
 
 ## Modes
 
-This module is intentionally simple and uses one free deployment model.
+This module is intentionally simple and uses one deployment model.
 
 Operationally, you can use it in either of these shapes:
 
@@ -340,6 +340,7 @@ module "codreum_dns_NX" {
   NX_log_group_name = "/aws/route53/resolver-query-logs"
   dns_alert_sns_arn = "arn:aws:sns:us-east-1:123456789012:alerts"
 
+  NX_enable_vpc  = true
   NX_vpc_id = module.codreum_autovpc.vpc_ids["main"]
 }
 ```
@@ -409,26 +410,11 @@ designs.
 
 ---
 
-## Upgrade to Codreum Pro
+## Upgrade to Codreum AWS Observability Pro
 
-Codreum Pro adds richer VPC capabilities.
+Codreum AWS Observability PRO adds richer VPC capabilities.
 
 The Pro package currently includes:
-
-1. license validation
-1. a license watcher Lambda
-1. SNS notifications and DynamoDB-backed license state
-1. a Pro `autovpc` module
-1. NAT support
-1. broader subnet and AZ options
-1. IPv6 / dual-stack controls
-1. VPC flow logs
-1. gateway and interface endpoints
-1. DNS firewall options
-1. Internet Monitor options
-1. VPC and subnet metric alarms
-
-Planned packaging:
 
 - **Codreum DNS Pro**
 - **Codreum AutoVPC Pro**
