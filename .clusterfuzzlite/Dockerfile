@@ -27,8 +27,8 @@ RUN set -eux; \
     apt-get install -y --no-install-recommends sudo procps; \
     rm -rf /var/lib/apt/lists/*
 
-COPY . /src/terraform-aws-dns-monitoring-nxdomain
-WORKDIR /src/terraform-aws-dns-monitoring-nxdomain
+COPY . /src/terraform-aws-observability-core
+WORKDIR /src/terraform-aws-observability-core
 
 COPY ./.clusterfuzzlite/build.sh /src/build.sh
 RUN chmod +x /src/build.sh

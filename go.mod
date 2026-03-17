@@ -1,4 +1,4 @@
-module github.com/Codreum/terraform-aws-dns-monitoring-nxdomain
+module github.com/Codreum/terraform-aws-observability-core
 
 go 1.25.0
 

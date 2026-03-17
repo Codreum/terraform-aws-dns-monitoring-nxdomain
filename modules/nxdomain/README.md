@@ -1,14 +1,14 @@
 <p align="center">
-  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml">
+  <a href="https://github.com/Codreum/terraform-aws-observability-core/actions/workflows/ci.yml">
     <img
-      src="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/actions/workflows/ci.yml/badge.svg?branch=main"
+      src="https://github.com/Codreum/terraform-aws-observability-core/actions/workflows/ci.yml/badge.svg?branch=main"
       alt="CI"
     />
   </a>
 
-  <a href="https://scorecard.dev/viewer/?uri=github.com/Codreum/terraform-aws-dns-monitoring-nxdomain">
+  <a href="https://scorecard.dev/viewer/?uri=github.com/Codreum/terraform-aws-observability-core">
     <img
-      src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/badge"
+      src="https://api.scorecard.dev/projects/github.com/Codreum/terraform-aws-observability-core/badge"
       alt="OpenSSF Scorecard"
     />
   </a>
@@ -22,16 +22,16 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/releases">
+  <a href="https://github.com/Codreum/terraform-aws-observability-core/releases">
     <img
-      src="https://img.shields.io/github/v/release/Codreum/terraform-aws-dns-monitoring-nxdomain"
+      src="https://img.shields.io/github/v/release/Codreum/terraform-aws-observability-core"
       alt="Release"
     />
   </a>
 
-  <a href="https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/LICENSE">
+  <a href="https://github.com/Codreum/terraform-aws-observability-core/blob/main/LICENSE">
     <img
-      src="https://img.shields.io/github/license/Codreum/terraform-aws-dns-monitoring-nxdomain"
+      src="https://img.shields.io/github/license/Codreum/terraform-aws-observability-core"
       alt="License"
     />
   </a>
@@ -221,7 +221,7 @@ This module can operate in either or both modes:
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
 
   prefix            = "acme-dev"
   aws_region        = "us-east-1"
@@ -238,7 +238,7 @@ You can also copy the `main.tf` file from the example folder and make minimal
 edits:
 
 - replace the module source with
-  `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0`
+  `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0`
 - change `NX_log_group_name`, `dns_alert_sns_arn`, `NX_vpc_id`, or
   `NX_zone_id` to your own resources
 - change `aws_region` to the VPC region if you are using VPC mode
@@ -399,7 +399,7 @@ artifacts** and **SLSA provenance**.
 
 Typical release assets include:
 
-- `terraform-aws-dns-monitoring-nxdomain-<version>.tar.gz`
+- `terraform-aws-observability-core-<version>.tar.gz`
 - `SHA256SUMS`
 - `sbom.spdx.json`
 - `*.sigstore.json`
@@ -417,8 +417,8 @@ Typical release assets include:
 VERSION=v1.1.0
 
 cosign verify-blob \
-  --bundle terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz.sigstore.json \
-  terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+  --bundle terraform-aws-observability-core-${VERSION}.tar.gz.sigstore.json \
+  terraform-aws-observability-core-${VERSION}.tar.gz
 ```
 
 Verify the other assets the same way:
@@ -433,14 +433,14 @@ cosign verify-blob --bundle sbom.spdx.json.sigstore.json sbom.spdx.json
 Verify that the artifact was built from this repository and tag:
 
 ```bash
-REPO="github.com/Codreum/terraform-aws-dns-monitoring-nxdomain"
+REPO="github.com/Codreum/terraform-aws-observability-core"
 VERSION=v1.1.0
 
 slsa-verifier verify-artifact \
   --provenance-path multiple.intoto.jsonl \
   --source-uri "${REPO}" \
   --source-tag "${VERSION}" \
-  terraform-aws-dns-monitoring-nxdomain-${VERSION}.tar.gz
+  terraform-aws-observability-core-${VERSION}.tar.gz
 ```
 
 ---
@@ -461,10 +461,10 @@ slsa-verifier verify-artifact \
 
 Quick links:
 
-- [Issues](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues)
-- [New issue](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
-- [Contributing](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/CONTRIBUTING.md)
-- [Security](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/blob/main/SECURITY.md)
+- [Issues](https://github.com/Codreum/terraform-aws-observability-core/issues)
+- [New issue](https://github.com/Codreum/terraform-aws-observability-core/issues/new/choose)
+- [Contributing](https://github.com/Codreum/terraform-aws-observability-core/blob/main/CONTRIBUTING.md)
+- [Security](https://github.com/Codreum/terraform-aws-observability-core/blob/main/SECURITY.md)
 - [Documentation](https://www.codreum.com/docs.html)
 
 ---

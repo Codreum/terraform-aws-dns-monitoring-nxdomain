@@ -1,12 +1,12 @@
 # Contributing
 
-Thanks for your interest in contributing to **terraform-aws-dns-monitoring-nxdomain**.
+Thanks for your interest in contributing to **terraform-aws-observability-core**.
 
 ## Scope & support
 
 - **Free module** support is via **GitHub Issues**.
-  - [Issues](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues)
-  - [New issue (choose template)](https://github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/issues/new/choose)
+  - [Issues](https://github.com/Codreum/terraform-aws-observability-core/issues)
+  - [New issue (choose template)](https://github.com/Codreum/terraform-aws-observability-core/issues/new/choose)
 - For **Pro/Paid** offerings, please refer to [Support/SLA](https://www.codreum.com/products.html).
 
 ## Development prerequisites

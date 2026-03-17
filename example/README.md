@@ -1,4 +1,4 @@
-# Examples — terraform-aws-dns-monitoring-nxdomain
+# Examples — terraform-aws-observability-core
 
 This directory contains **ready-to-run Terraform examples** for the Codreum
 modules in this repository.
@@ -117,18 +117,18 @@ Current local paths used in the examples:
 
 If you want to use Git module sources instead, replace them with:
 
-- `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0`
-- `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0`
+- `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0`
+- `github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0`
 
 Example:
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
 }
 
 module "codreum_autovpc" {
-  source = "github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
 }
 ```
 
@@ -360,8 +360,8 @@ Common causes:
 
 If you switched from local paths to Git sources, ensure the subdirectory is correct:
 
-- NXDOMAIN: `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/nxdomain?ref=v1.1.0`
-- AutoVPC: `github.com/Codreum/terraform-aws-dns-monitoring-nxdomain//modules/autovpc?ref=v1.1.0`
+- NXDOMAIN: `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0`
+- AutoVPC: `github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0`
 
 Re-run:
 
