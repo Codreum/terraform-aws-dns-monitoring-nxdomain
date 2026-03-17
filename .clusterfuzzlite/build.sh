@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$SRC/terraform-aws-dns-monitoring-nxdomain"
+cd "$SRC/terraform-aws-observability-core"
 
 # Ensure Go + installed tools are always found.
 export PATH="${GOBIN:-$GOPATH/bin}:/usr/local/go/bin:$PATH"
@@ -12,6 +12,6 @@ go get github.com/AdamKorcz/go-118-fuzz-build/testing@v0.0.0-20250520111509-a70c
 go mod download
 
 compile_native_go_fuzzer \
-  github.com/Codreum/terraform-aws-dns-monitoring-nxdomain/fuzz \
+  github.com/Codreum/terraform-aws-observability-core/fuzz \
   FuzzHCLParse \
   fuzz_hclparse

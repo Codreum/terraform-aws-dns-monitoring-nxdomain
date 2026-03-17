@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea or enhancement for terraform-aws-dns-monitoring-nxdomain
+about: Suggest an idea or enhancement for terraform-aws-observability-core
 title: "feat: <short summary>"
 labels: ["enhancement"]
 assignees: []
