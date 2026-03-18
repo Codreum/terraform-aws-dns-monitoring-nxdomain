@@ -66,3 +66,5 @@ htmlcov/
 *.plan
 .terraform.lock.hcl.backup
 oss-fuzz/
+gittag
+gittag.pub

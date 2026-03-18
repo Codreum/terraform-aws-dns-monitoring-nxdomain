@@ -235,7 +235,7 @@ If a mode is disabled, any value left in the corresponding ID variable is ignore
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 
   prefix            = "acme-dev"
   aws_region        = "us-east-1"
@@ -255,7 +255,7 @@ You can also copy the `main.tf` file from the example folder and make minimal
 edits:
 
 - replace the module source with
-  `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0`
+  `github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1`
 - change `NX_log_group_name`, `dns_alert_sns_arn`, `NX_enable_vpc`,
   `NX_enable_zone`, `NX_vpc_id`, or `NX_zone_id` to your own resources
 - change `aws_region` to the VPC region if you are using VPC mode
@@ -292,7 +292,7 @@ output "dns_NX_ci_rules" {
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 
   prefix            = "acme-dev"
   aws_region        = "us-east-1"
@@ -311,7 +311,7 @@ module "codreum_dns_NX" {
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 
   prefix            = "acme-dev"
   aws_region        = "ap-southeast-1"
@@ -330,7 +330,7 @@ module "codreum_dns_NX" {
 
 ```hcl
 module "codreum_dns_NX" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 
   prefix            = "acme-dev"
   aws_region        = "us-east-1"
@@ -531,7 +531,7 @@ Typical release assets include:
 1. Verify the artifact:
 
 ```bash
-VERSION=v1.1.0
+VERSION=v1.1
 
 cosign verify-blob \
   --bundle terraform-aws-observability-core-${VERSION}.tar.gz.sigstore.json \
@@ -551,7 +551,7 @@ Verify that the artifact was built from this repository and tag:
 
 ```bash
 REPO="github.com/Codreum/terraform-aws-observability-core"
-VERSION=v1.1.0
+VERSION=v1.1
 
 slsa-verifier verify-artifact \
   --provenance-path multiple.intoto.jsonl \

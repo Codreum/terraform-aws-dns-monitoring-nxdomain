@@ -45,8 +45,10 @@
 
 <p align="center">
   <a href="https://www.codreum.com">Website</a> •
-  <a href="https://www.codreum.com/products.html#zone">Upgrade</a> •
+  <a href="https://www.codreum.com/products.html#zone">Products</a> •
   <a href="#available-modules">Modules</a>
+  <a href="#Module's-Tier-comparison">Tier</a>
+  <a href="#Core-vs-Pro">Pro</a>
 </p>
 
 # Codreum Terraform AWS Modules
@@ -68,7 +70,7 @@ Example:
 
 ```hcl
 module "codreum_dns_nx" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 
   prefix            = "acme-dev"
   aws_region        = "us-east-1"
@@ -96,7 +98,7 @@ Example:
 
 ```hcl
 module "codreum_autovpc" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1"
 
   prefix     = "acme-dev-"
   aws_region = "us-east-1"
@@ -184,11 +186,11 @@ using the same repo tag.
 Examples:
 
 ```hcl
-source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1.0"
+source = "github.com/Codreum/terraform-aws-observability-core//modules/nxdomain?ref=v1.1"
 ```
 
 ```hcl
-source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
+source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1"
 ```
 
 ## Core vs Pro

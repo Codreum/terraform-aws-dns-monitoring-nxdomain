@@ -258,7 +258,7 @@ Common valid combinations include:
 
 ```hcl
 module "codreum_autovpc" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1"
 
   prefix     = "acme-dev-"
   aws_region = "ap-southeast-1"
@@ -283,7 +283,7 @@ module "codreum_autovpc" {
 
 ```hcl
 module "codreum_autovpc" {
-  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1.0"
+  source = "github.com/Codreum/terraform-aws-observability-core//modules/autovpc?ref=v1.1"
 
   prefix     = "acme-dev-"
   aws_region = "ap-southeast-1"
